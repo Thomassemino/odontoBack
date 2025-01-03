@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+const Tratamientos = require('../tratamientos/tratamientosSchema');
 const citaSchema = new mongoose.Schema({
   pacienteId: { 
     type: mongoose.Schema.Types.ObjectId, 
@@ -33,7 +33,8 @@ const citaSchema = new mongoose.Schema({
   monto: {
     type: Number,
     default: 0
-  }
+  },
+  tratamientos: [Tratamientos.schema]
 });
 
 module.exports = mongoose.model('Cita', citaSchema);
