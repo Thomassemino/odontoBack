@@ -67,8 +67,9 @@ const login = async (req, res) => {
         if (!esValida) {
             return res.status(400).json({ message: 'Contraseña y o email incorrecto' });
         }
-
-        res.status(200).json({ message: 'Login exitoso', usuario });
+        const rol = usuario.rol;
+        res.status(200).json({ message: 'Login exitoso', rol });
+        
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Error en el inicio de sesión' });
