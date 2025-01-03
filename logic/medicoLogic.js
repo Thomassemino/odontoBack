@@ -68,7 +68,7 @@ async function getAllMedicos() {
 }
 
 async function actualizarMedico(id, data) {
-  return await MedicoSchemaSchema.findByIdAndUpdate(id, data, { new: true });
+  return await MedicoSchema.findByIdAndUpdate(id, data, { new: true });
 }
 
 module.exports = {
