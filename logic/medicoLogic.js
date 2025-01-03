@@ -8,7 +8,8 @@ async function create(request) {
       email: request.body.email,
       especialidad: request.body.especialidad,
       celular: request.body.celular,
-      nMatricula: request.body.nMatricula
+      nMatricula: request.body.nMatricula,
+      clave: request.body.clave
     });
     await newMedico.save();
 
@@ -67,7 +68,7 @@ async function getAllMedicos() {
 }
 
 async function actualizarMedico(id, data) {
-  return await MedicoSchemaSchema.findByIdAndUpdate(id, data, { new: true });
+  return await MedicoSchema.findByIdAndUpdate(id, data, { new: true });
 }
 
 module.exports = {

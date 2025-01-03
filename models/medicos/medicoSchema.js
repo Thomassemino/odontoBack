@@ -33,12 +33,10 @@ const medicoSchema = new mongoose.Schema({
   },
   clave: { 
     type: String, 
-    required: [true, 'La creacion de una clave es obligatoria'], 
-    unique: true,                                              
+    required: [true, 'La creacion de una clave es obligatoria'],
     trim: true,                                               
-    default: 'no especificado',
     match: [/^[a-zA-Z0-9]+$/, 'La clave solo puede contener letras y números, sin espacios ni símbolos']                          
-  },
+  }
 });
 
 module.exports = mongoose.model('Medico', medicoSchema);
