@@ -8,7 +8,8 @@ async function create(request) {
       email: request.body.email,
       especialidad: request.body.especialidad,
       celular: request.body.celular,
-      nMatricula: request.body.nMatricula
+      nMatricula: request.body.nMatricula,
+      clave: request.body.clave,
     });
     await newMedico.save();
 
