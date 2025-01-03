@@ -13,6 +13,7 @@ const addPaciente = async (req, res) => {
 
 // Controlador para buscar un Paciente por nombre
 const findByName = async (req, res) => {
+    //console.log(req.params);
     try {
         const paciente = await PacienteLogic.findByName(req);
         if (!paciente) {
@@ -78,8 +79,10 @@ const getAll = async (req, res) => {
 async function actualizarPaciente(req, res) {
     try {
       const { id } = req.params;
-      const paciente = await PacienteLogic.actualizarPaciente(id, req.body);
-      res.status(200).json(empresa);
+      console.log(req.params);
+      console.log(id);
+      const paciente = await PacienteLogic.updateByID(id, req.body);
+      res.status(200).json(paciente);
     } catch (error) {
       res.status(500).json({ error: 'Error al actualizar el paciente', detalle: error.message });
     }
