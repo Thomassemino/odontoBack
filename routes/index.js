@@ -24,4 +24,6 @@ router.use("/historiaClinica", historiaClinicaRoutes);
 const loginRoutes = require("./loginRoutes");
 router.use("/login", loginRoutes);
 
+const tratamientoRoutes = require("./tratamientoRoutes");
+router.use("/tratamientos", tratamientoRoutes);
 module.exports = router;

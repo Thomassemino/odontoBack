@@ -9,7 +9,11 @@ async function create(request) {
       especialidad: request.body.especialidad,
       celular: request.body.celular,
       nMatricula: request.body.nMatricula,
+<<<<<<< HEAD
       clave: request.body.clave
+=======
+      clave: request.body.clave,
+>>>>>>> 37263b5a4a9f0a53de8dd7c854f579b2ddecf4d4
     });
     await newMedico.save();
 
