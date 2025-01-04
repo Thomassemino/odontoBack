@@ -36,9 +36,19 @@ async function actualizarSecretaria(id, data) {
   return await SecretariaSchema.findByIdAndUpdate(id, data, { new: true });
 }
 
+async function getAll() {
+  try {
+      const secretarias = await SecretariaSchema.find({});
+      return secretarias;  // Retorna todos los pacientes
+  } catch (error) {
+      throw new Error(`Error al obtener todos las secretarias: ${error.message}`);
+  }
+}
+
 module.exports = {
   create,
   deleteByName,
   findByName,
-  actualizarSecretaria
+  actualizarSecretaria,
+  getAll
 };

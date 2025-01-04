@@ -44,11 +44,25 @@ async function actualizarSecretaria(req, res) {
     } catch (error) {
       res.status(500).json({ error: 'Error al actualizar la secretaria', detalle: error.message });
     }
-  }
+}
+
+
+const getAll = async (req, res) => {
+    try {
+        const secretarias = await SecretariaLogic.getAll();
+        res.status(200).json({ secretarias: secretarias });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ status: 'error', message: err.message });
+    }
+};
+
+
 
 module.exports = {
     create,
     deleteByName,
     findByName,
-    actualizarSecretaria
+    actualizarSecretaria,
+    getAll,
 };

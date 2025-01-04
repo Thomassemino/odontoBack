@@ -6,6 +6,7 @@ const router = express.Router();
 router.post('/create', secretariaController.create);     
 router.delete('/borrar/:nombre', secretariaController.deleteByName);
 router.get('/buscar/:nombre', secretariaController.findByName);
+router.get('/getAll', secretariaController.getAll);
 router.put('/updateById/:id', secretariaController.actualizarSecretaria);
 
 module.exports = router;
