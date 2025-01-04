@@ -91,6 +91,49 @@ async function obtenerCitasPorMes(req, res) {
   }
 }
 
+const getCitasHoy = async (req, res) => {
+  try {
+      // Obtener la fecha actual y establecer las horas a 00:00:00
+      const fechaInicio = new Date();
+      fechaInicio.setHours(0, 0, 0, 0);
+
+      // Establecer la fecha final a las 23:59:59
+      const fechaFin = new Date();
+      fechaFin.setHours(23, 59, 59, 999);
+
+      // Buscar citas entre fechaInicio y fechaFin
+      const citas = await citaSchema.find({
+          fecha: {
+              $gte: fechaInicio,
+              $lte: fechaFin
+          }
+      })
+      .populate('pacienteId', 'nombre apellido') 
+      .populate('medicoId', 'nombre apellido')   
+      .sort({ fecha: 1 }); // Ordenar por fecha ascendente
+
+      // Si no hay citas
+      if (citas.length === 0) {
+          return res.status(200).json({
+              mensaje: 'No hay citas programadas para hoy',
+              data: []
+          });
+      }
+
+      // Devolver las citas encontradas
+      res.status(200).json({
+          mensaje: 'Citas del día recuperadas exitosamente',
+          total: citas.length,
+          data: citas
+      });
+
+  } catch (error) {
+      res.status(500).json({
+          mensaje: 'Error al obtener las citas del día',
+          error: error.message
+      });
+  }
+};
 
 module.exports = {
   crearCita,
@@ -99,4 +142,5 @@ module.exports = {
   actualizarCita,
   eliminarCita,
   obtenerCitasPorMes,
+  getCitasHoy,
 };
