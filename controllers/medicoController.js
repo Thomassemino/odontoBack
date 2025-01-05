@@ -82,9 +82,9 @@ const findByMatricula = async (req, res) => {
 };
 
 // Controlador para eliminar un médico por usuario
-const deleteByUser = async (req, res) => {
+const deleteByMatricula = async (req, res) => {
     try {
-        const deletedMedico = await MedicoLogic.deleteByUser(req);
+        const deletedMedico = await MedicoLogic.deleteByMatricula(req);
         res.status(200).json({ status: 'success', message: 'Médico eliminado', medico: deletedMedico });
     } catch (err) {
         console.log(err);
@@ -118,7 +118,7 @@ module.exports = {
     findByUser,
     findByEspecialidad,
     findByMatricula,
-    deleteByUser,
+    deleteByMatricula,
     getAllMedicos,
     actualizarMedico
 };

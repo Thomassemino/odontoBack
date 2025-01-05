@@ -21,7 +21,7 @@ medicoRouter.route("/findByEspecialidad/:especialidad").get(medicoController.fin
 medicoRouter.route("/findByMatricula/:nMatricula").get(medicoController.findByMatricula);
 
 // Ruta para eliminar un médico por usuario
-medicoRouter.route("/deleteByUser/:user").delete(medicoController.deleteByUser);
+medicoRouter.route("/deleteByMatricula/:nMatricula").delete(medicoController.deleteByMatricula);
 
 // Ruta para obtener todos los médicos
 medicoRouter.route("/").get(medicoController.getAllMedicos); 

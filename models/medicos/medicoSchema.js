@@ -6,7 +6,7 @@ const medicoSchema = new mongoose.Schema({
     required: [true, 'El nombre es obligatorio'], 
     trim: true,                                    
     lowercase: true,
-    match: [/^[a-zA-Z\s]+$/, 'Por favor ingresa un nombre válido que solo contenga letras y espacios'],                     
+    match: [/^[a-zA-ZáéíóúÁÉÍÓÚüÜàèìòùÀÈÌÒÙ\s]+$/, 'Por favor ingresa un nombre válido que solo contenga letras y espacios']
   },
   email: { 
     type: String, 

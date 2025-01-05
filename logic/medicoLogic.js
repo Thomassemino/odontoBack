@@ -46,9 +46,9 @@ async function findByMatricula(request) {
     return await MedicoSchema.findOne({ nMatricula: request.params.nMatricula });
 }
 
-async function deleteByUser(request) {
+async function deleteByMatricula(request) {
     try {
-        const deletedMedico = await MedicoSchema.findOneAndDelete({ usuario: request.params.usuario });
+        const deletedMedico = await MedicoSchema.findOneAndDelete({ nMatricula: request.params.nMatricula });
         if (!deletedMedico) {
             throw new Error('Médico no encontrado');
         }
@@ -78,7 +78,7 @@ module.exports = {
   findByUser,
   findByEspecialidad,
   findByMatricula,
-  deleteByUser,
+  deleteByMatricula,
   getAllMedicos,
   actualizarMedico
 };
