@@ -44,8 +44,13 @@ const pacienteSchema = new mongoose.Schema({
       },
       message: 'Email inválido'
     }
-  }
- }, {
+  },
+  historiaClinica: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'HistoriaClinica'
+  },
+ }, 
+ {
   timestamps: true,
   toJSON: {
     transform: (doc, ret) => {

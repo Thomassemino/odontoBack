@@ -52,27 +52,44 @@ const create = async (req, res) => {
 };
 
 // Controlador para loguearse (verificar email y contraseña)
+
 const login = async (req, res) => {
     const { email, password } = req.body;
-
+  
     try {
-        // Buscar el usuario por email
+        // Buscar al usuario por su email
         const usuario = await Usuario.findOne({ email });
+  
+        // Si no se encuentra al usuario
         if (!usuario) {
-            return res.status(400).json({ message: 'Contraseña y o email incorrecto' });
+            return res.status(401).json({ 
+                success: false,
+                message: 'Credenciales inválidas' 
+            });
         }
 
-        // Comparar la contraseña proporcionada con la almacenada
-        const esValida = await bcrypt.compare(password, usuario.password);
-        if (!esValida) {
-            return res.status(400).json({ message: 'Contraseña y o email incorrecto' });
+        // Verificar la contraseña
+        const passwordValido = await bcrypt.compare(password, usuario.password);
+        if (!passwordValido) {
+            return res.status(401).json({ 
+                success: false,
+                message: 'Credenciales inválidas' 
+            });
         }
-        const rol = usuario.rol;
-        res.status(200).json({ message: 'Login exitoso', rol });
-        
+  
+        // Si las credenciales son válidas
+        res.status(200).json({
+            success: true,
+            message: 'Login exitoso',
+            rol: usuario.rol,
+            userId: usuario._id.toString()
+        });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Error en el inicio de sesión' });
+        console.error('Error en el inicio de sesión:', error);
+        res.status(500).json({ 
+            success: false,
+            message: 'Error en el servidor' 
+        });
     }
 };
 
