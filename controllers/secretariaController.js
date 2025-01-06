@@ -25,6 +25,19 @@ const findByEmail = async (req, res) => {
     }
 };
 
+const findById = async (req, res) => {
+    try {
+        const secretaria = await SecretariaLogic.findById(req);
+        if (!secretaria) {
+            return res.status(404).json({ status: 'error', message: 'Secretaria/o no encontrado' });
+        }
+        res.status(200).json({ secretaria: secretaria });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ status: 'error', message: err.message });
+    }
+};
+
 // Controlador para eliminar una secretaria por nombre
 const deleteByName = async (req, res) => {
     try {
@@ -63,6 +76,7 @@ module.exports = {
     create,
     deleteByName,
     findByEmail,
+    findById,
     actualizarSecretaria,
     getAll,
 };

@@ -36,6 +36,10 @@ async function actualizarSecretaria(id, data) {
   return await SecretariaSchema.findByIdAndUpdate(id, data, { new: true });
 }
 
+async function findById(request) {
+  return await SecretariaSchema.findById(request.params.id);
+}
+
 async function getAll() {
   try {
       const secretarias = await SecretariaSchema.find({});
@@ -49,6 +53,7 @@ module.exports = {
   create,
   deleteByName,
   findByEmail,
+  findById,
   actualizarSecretaria,
   getAll
 };
