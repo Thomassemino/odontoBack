@@ -55,9 +55,9 @@ const findById = async (req, res) => {
 };
 
 // Controlador para eliminar un paciente por usuario
-const deleteByName = async (req, res) => {
+const deleteById = async (req, res) => {
     try {
-        const deletedPaciente = await PacienteLogic.deleteByName(req);
+        const deletedPaciente = await PacienteLogic.deleteById(req);
         res.status(200).json({ status: 'success', message: 'Paciente eliminado', paciente: deletedPaciente });
     } catch (err) {
         console.log(err);
@@ -93,7 +93,7 @@ module.exports = {
     findByName,
     findByDni,
     findById,
-    deleteByName,
+    deleteById,
     getAll,
     actualizarPaciente
 };

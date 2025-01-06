@@ -17,8 +17,8 @@ async function create(request) {
   }
 }
 
-async function findByName(request) {
-  return await SecretariaSchema.findOne({ nombre: request.params.nombre });
+async function findByEmail(request) {
+  return await SecretariaSchema.findOne({ email: request.params.email });
 }
 async function deleteByName(request) {
     try {
@@ -48,7 +48,7 @@ async function getAll() {
 module.exports = {
   create,
   deleteByName,
-  findByName,
+  findByEmail,
   actualizarSecretaria,
   getAll
 };

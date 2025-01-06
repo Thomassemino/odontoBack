@@ -18,8 +18,8 @@ pacienteRouter.route("/findById/:Id").get(pacienteController.findById);
 pacienteRouter.route("/updateById/:id").put(pacienteController.actualizarPaciente);
 
 
-// Ruta para eliminar un paciente por nombre
-pacienteRouter.route("/deleteByName/:nombre").delete(pacienteController.deleteByName);
+// Ruta para eliminar un paciente por id
+pacienteRouter.route("/deleteById/:Id").delete(pacienteController.deleteById);
 
 // Ruta para obtener todos los pacientes
 pacienteRouter.route("/").get(pacienteController.getAll);

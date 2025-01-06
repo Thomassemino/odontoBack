@@ -11,10 +11,10 @@ const create = async (req, res) => {
     }
 };
 
-// Controlador para buscar una secretaria por nombre
-const findByName = async (req, res) => {
+// Controlador para buscar una secretaria por email
+const findByEmail = async (req, res) => {
     try {
-        const secretaria = await SecretariaLogic.findByName(req);
+        const secretaria = await SecretariaLogic.findByEmail(req);
         if (!secretaria) {
             return res.status(404).json({ status: 'error', message: 'Secretaria/o no encontrada/o' });
         }
@@ -62,7 +62,7 @@ const getAll = async (req, res) => {
 module.exports = {
     create,
     deleteByName,
-    findByName,
+    findByEmail,
     actualizarSecretaria,
     getAll,
 };

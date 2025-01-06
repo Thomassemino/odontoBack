@@ -1,6 +1,6 @@
 const { get } = require("mongoose");
 const PacienteSchema = require("../models/pacientes/pacienteSchema");
-
+const CitasSchema = require("../models/cita/citaSchema");
 async function create(request) {
   try {
     const { 
@@ -44,9 +44,9 @@ async function updateByID(id, updateData) {
   });
 }
 
-async function deleteByName(request) {
+async function deleteById(request) {
     try {
-        const pacienteBorrado = await PacienteSchema.findOneAndDelete({ nombre: request.params.nombre });
+        const pacienteBorrado = await PacienteSchema.findOneAndDelete({ _id: request.params.id });
         if (!pacienteBorrado) {
             throw new Error('Paciente no encontrado');
         }
@@ -69,7 +69,7 @@ module.exports = {
   create,
   findByName,
   updateByID,
-  deleteByName,
+  deleteById,
   findByDni,
   getAll
 };
