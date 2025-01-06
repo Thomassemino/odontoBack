@@ -36,14 +36,23 @@ async function obtenerCitaPorId(req, res) {
 }
 
 // Actualizar una cita
+// Actualizar una cita
 async function actualizarCita(req, res) {
   try {
-    const citaActualizada = await citaService.actualizarCita(req.params.id, req.body);
-    if (citaActualizada) {
-      res.status(200).json(citaActualizada);
-    } else {
-      res.status(404).json({ message: 'Cita no encontrada' });
+    const citaActual = await citaService.obtenerCitaPorId(req.params.id);
+    if (!citaActual) {
+      return res.status(404).json({ message: 'Cita no encontrada' });
     }
+
+    // Combinar los datos actuales de la cita con los datos recibidos en el cuerpo de la solicitud
+    const datosActualizados = {
+      ...citaActual.toObject(),
+      ...req.body,
+      motivo: req.body.motivo || citaActual.motivo, // Asegurar que el motivo no se pierda
+    };
+
+    const citaActualizada = await citaService.actualizarCita(req.params.id, datosActualizados);
+    res.status(200).json(citaActualizada);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -107,6 +116,7 @@ const getCitasHoy = async (req, res) => {
       })
       .populate('pacienteId', 'nombre telefono areaCode') // Agregamos los campos necesarios
       .populate('medicoId', 'nombre')
+      .populate('tratamientos', 'nombre')
       .sort({ fecha: 1 });
 
       if (citas.length === 0) {

@@ -32,6 +32,10 @@ async function findByUser(request) {
     return await MedicoSchema.findOne({ user: request.params.user });
 }
 
+async function findById(request) {
+  return await MedicoSchema.findById(request.params.id);
+}
+
 
 async function findByEspecialidad(request) {
     try {
@@ -76,6 +80,7 @@ module.exports = {
   findByEmail,
   findByName,
   findByUser,
+  findById,
   findByEspecialidad,
   findByMatricula,
   deleteByMatricula,

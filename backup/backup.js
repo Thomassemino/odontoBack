@@ -40,6 +40,17 @@ async function sendBackupByEmail(backupFile) {
 async function backupDatabase() {
   try {
     const backupDir = path.join(__dirname, 'backups');
+
+    // Eliminar todos los archivos dentro de la carpeta 'backups' antes de crear uno nuevo
+    const files = fs.readdirSync(backupDir);
+    for (const file of files) {
+      const filePath = path.join(backupDir, file);
+      if (fs.lstatSync(filePath).isFile()) {
+        fs.unlinkSync(filePath); // Elimina el archivo
+      }
+    }
+
+    // Si no existe la carpeta 'backups', la crea
     if (!fs.existsSync(backupDir)) {
       fs.mkdirSync(backupDir);
     }

@@ -67,6 +67,20 @@ const findByEspecialidad = async (req, res) => {
     }
 };
 
+// Controlador para buscar un médico por ID
+const findById = async (req, res) => {
+    try {
+        const medico = await MedicoLogic.findById(req);
+        if (!medico) {
+            return res.status(404).json({ status: 'error', message: 'Médico no encontrado' });
+        }
+        res.status(200).json({ medico: medico });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ status: 'error', message: err.message });
+    }
+};
+
 // Controlador para buscar un médico por matrícula
 const findByMatricula = async (req, res) => {
     try {
@@ -116,6 +130,7 @@ module.exports = {
     findByEmail,
     findByName,
     findByUser,
+    findById,
     findByEspecialidad,
     findByMatricula,
     deleteByMatricula,

@@ -14,6 +14,9 @@ medicoRouter.route("/findByName/:nombre").get(medicoController.findByName);
 // Ruta para buscar un médico por usuario
 medicoRouter.route("/findByUser/:user").get(medicoController.findByUser);
 
+// Ruta para buscar un médico por ID
+medicoRouter.route("/findById/:id").get(medicoController.findById);
+
 // Ruta para buscar médicos por especialidad
 medicoRouter.route("/findByEspecialidad/:especialidad").get(medicoController.findByEspecialidad);
 
