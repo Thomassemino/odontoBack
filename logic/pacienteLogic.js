@@ -46,7 +46,7 @@ async function updateByID(id, updateData) {
 
 async function deleteById(request) {
     try {
-        const pacienteBorrado = await PacienteSchema.findOneAndDelete({ _id: request.params.id });
+        const pacienteBorrado = await PacienteSchema.findOneAndDelete({ id: request.params.id });
         if (!pacienteBorrado) {
             throw new Error('Paciente no encontrado');
         }

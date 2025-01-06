@@ -1,5 +1,4 @@
 const MedicoSchema = require("../models/medicos/medicoSchema");
-
 async function create(request) {
   try {
     // Crear un nuevo medico
@@ -50,9 +49,9 @@ async function findByMatricula(request) {
     return await MedicoSchema.findOne({ nMatricula: request.params.nMatricula });
 }
 
-async function deleteByMatricula(request) {
+async function deleteById(request) {
     try {
-        const deletedMedico = await MedicoSchema.findOneAndDelete({ nMatricula: request.params.nMatricula });
+        const deletedMedico = await MedicoSchema.findOneAndDelete({ Id : request.params.Id });
         if (!deletedMedico) {
             throw new Error('Médico no encontrado');
         }
@@ -83,7 +82,7 @@ module.exports = {
   findById,
   findByEspecialidad,
   findByMatricula,
-  deleteByMatricula,
+  deleteById,
   getAllMedicos,
   actualizarMedico
 };

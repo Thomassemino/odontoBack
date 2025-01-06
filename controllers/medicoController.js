@@ -1,4 +1,5 @@
 const MedicoLogic = require("../logic/medicoLogic");
+const CitaSchema = require("../models/cita/citaSchema");
 
 
 const addMedico = async (req, res) => {
@@ -96,9 +97,17 @@ const findByMatricula = async (req, res) => {
 };
 
 // Controlador para eliminar un médico por usuario
-const deleteByMatricula = async (req, res) => {
+const deleteById = async (req, res) => {
     try {
-        const deletedMedico = await MedicoLogic.deleteByMatricula(req);
+
+        const medicoId = req.params.Id;
+        // Verificar si el medico tiene alguna cita con estado distinto a 'completada'
+        const citasPendientes = await CitaSchema.find({ medicoId, estado: { $ne: 'completada' } });
+        if (citasPendientes.length > 0) {
+            return res.status(400).json({ status: 'error', message: 'No se puede eliminar el medico, tiene citas pendientes o canceladas.' });
+        }  
+
+        const deletedMedico = await MedicoLogic.deleteById(req);
         res.status(200).json({ status: 'success', message: 'Médico eliminado', medico: deletedMedico });
     } catch (err) {
         console.log(err);
@@ -133,7 +142,7 @@ module.exports = {
     findById,
     findByEspecialidad,
     findByMatricula,
-    deleteByMatricula,
+    deleteById,
     getAllMedicos,
     actualizarMedico
 };
