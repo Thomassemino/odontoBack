@@ -24,7 +24,22 @@ async function obtenerCitaPorId(id) {
     .populate('medicoId', 'nombre');
 }
 
+// Obtener citas por fecha
+async function obtenerCitasPorFecha(fecha) {
+  const fechaInicio = new Date(fecha.setHours(0, 0, 0, 0));
+  const fechaFin = new Date(fecha.setHours(23, 59, 59, 999));
 
+  return await Cita.find({
+    fecha: {
+      $gte: fechaInicio,
+      $lte: fechaFin
+    }
+  })
+  .populate('pacienteId', 'nombre telefono areaCode')
+  .populate('medicoId', 'nombre')
+  .populate('tratamientos', 'nombre')
+  .sort({ fecha: 1 });
+}
 
 // Actualizar cita
 async function actualizarCita(id, data) {
@@ -41,5 +56,6 @@ module.exports = {
   obtenerCitas,
   obtenerCitaPorId,
   actualizarCita,
-  eliminarCita
+  eliminarCita,
+  obtenerCitasPorFecha,
 };

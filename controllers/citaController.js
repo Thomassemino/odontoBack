@@ -58,6 +58,42 @@ async function actualizarCita(req, res) {
   }
 }
 
+async function getCitasPorFecha(req, res) {
+  try {
+    const fechaString = req.params.fecha; // formato: "YYYY-MM-DD"
+    
+    // Crear fechas en zona horaria de Argentina
+    const fechaInicio = new Date(`${fechaString}T00:00:00-03:00`);
+    const fechaFin = new Date(`${fechaString}T23:59:59.999-03:00`);
+
+    console.log('Buscando citas entre:', fechaInicio, 'y', fechaFin);
+
+    const citas = await citaSchema.find({
+      fecha: {
+        $gte: fechaInicio,
+        $lte: fechaFin
+      }
+    })
+    .populate('pacienteId', 'nombre telefono areaCode')
+    .populate('medicoId', 'nombre')
+    .populate('tratamientos', 'nombre')
+    .sort({ fecha: 1 });
+
+    res.status(200).json({
+      mensaje: 'Citas recuperadas exitosamente',
+      total: citas.length,
+      data: citas
+    });
+
+  } catch (error) {
+    console.error('Error en getCitasPorFecha:', error);
+    res.status(500).json({
+      mensaje: 'Error al obtener las citas',
+      error: error.message
+    });
+  }
+}
+
 // Eliminar una cita
 async function eliminarCita(req, res) {
   try {
@@ -148,4 +184,5 @@ module.exports = {
   eliminarCita,
   obtenerCitasPorMes,
   getCitasHoy,
+  getCitasPorFecha,
 };

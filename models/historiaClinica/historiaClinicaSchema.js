@@ -29,7 +29,7 @@ const historiaClinicaSchema = new mongoose.Schema({
         anormalidadBoca: { type: String, maxlength: 240 },
         sangradoEncias: { type: Boolean },
         hinchazonCara: { type: Boolean },
-        higieneBucal: { type: String, enum: ['muy bueno', 'bueno', 'malo', 'muy malo'] }
+        higieneBucal: { type: String, enum: ['muy buena', 'buena', 'mala', 'muy mala'] }
     },
     aclaracionesFinalesMedico: { type: String, maxlength: 240 }
 });
