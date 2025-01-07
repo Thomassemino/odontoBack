@@ -5,37 +5,37 @@ const PacienteSchema = require('../models/pacientes/pacienteSchema'); // Importa
 
 async function create(request) {    
     try {
-        // Crear nueva historia clínica
+        // Crear nueva historia clínica respetando la estructura correcta
         const newHistoriaClinica = new HistoriaClinicaSchema({
             datosPersonalesMedicos: {
-                enfermedades: request.body.enfermedades,
-                tratamientoActual: request.body.tratamientoActual,
-                medicamentosRegulares: request.body.medicamentosRegulares,
-                enfermedadInfectoInfecciosa: request.body.enfermedadInfectoInfecciosa,
-                fuma: request.body.fuma,
-                embarazo: request.body.embarazo,
-                enfermedadConstancia: request.body.enfermedadConstancia,
-                alergias: request.body.alergias,
-                diabetes: request.body.diabetes,
-                enfermedadTransmisionSexual: request.body.enfermedadTransmisionSexual,
-                motivoConsulta: request.body.motivoConsulta
+                enfermedades: request.body.datosPersonalesMedicos?.enfermedades,
+                tratamientoActual: request.body.datosPersonalesMedicos?.tratamientoActual,
+                medicamentosRegulares: request.body.datosPersonalesMedicos?.medicamentosRegulares,
+                enfermedadInfectoInfecciosa: request.body.datosPersonalesMedicos?.enfermedadInfectoInfecciosa,
+                fuma: request.body.datosPersonalesMedicos?.fuma,
+                embarazo: request.body.datosPersonalesMedicos?.embarazo,
+                enfermedadConstancia: request.body.datosPersonalesMedicos?.enfermedadConstancia,
+                alergias: request.body.datosPersonalesMedicos?.alergias,
+                diabetes: request.body.datosPersonalesMedicos?.diabetes,
+                enfermedadTransmisionSexual: request.body.datosPersonalesMedicos?.enfermedadTransmisionSexual,
+                motivoConsulta: request.body.datosPersonalesMedicos?.motivoConsulta
             },
             antecedentesMedicosOdontologicos: {
-                consultoOdontologo: request.body.consultoOdontologo,
+                consultoOdontologo: request.body.antecedentesMedicosOdontologicos?.consultoOdontologo,
                 tratamientoOdontologico: {
-                    descripcion: request.body.tratamientoOdontologicoDescripcion,
-                    desdeCuando: request.body.tratamientoOdontologicoDesdeCuando
+                    descripcion: request.body.antecedentesMedicosOdontologicos?.tratamientoOdontologico?.descripcion,
+                    desdeCuando: request.body.antecedentesMedicosOdontologicos?.tratamientoOdontologico?.desdeCuando
                 },
-                dolor: request.body.dolor,
-                fracturaDiente: request.body.fracturaDiente,
-                dificultadMasticar: request.body.dificultadMasticar,
-                dificultadAbrirBoca: request.body.dificultadAbrirBoca
+                dolor: request.body.antecedentesMedicosOdontologicos?.dolor,
+                fracturaDiente: request.body.antecedentesMedicosOdontologicos?.fracturaDiente,
+                dificultadMasticar: request.body.antecedentesMedicosOdontologicos?.dificultadMasticar,
+                dificultadAbrirBoca: request.body.antecedentesMedicosOdontologicos?.dificultadAbrirBoca
             },
             estadoActual: {
-                anormalidadBoca: request.body.anormalidadBoca,
-                sangradoEncias: request.body.sangradoEncias,
-                hinchazonCara: request.body.hinchazonCara,
-                higieneBucal: request.body.higieneBucal
+                anormalidadBoca: request.body.estadoActual?.anormalidadBoca,
+                sangradoEncias: request.body.estadoActual?.sangradoEncias,
+                hinchazonCara: request.body.estadoActual?.hinchazonCara,
+                higieneBucal: request.body.estadoActual?.higieneBucal
             },
             aclaracionesFinalesMedico: request.body.aclaracionesFinalesMedico
         });
@@ -44,7 +44,7 @@ async function create(request) {
         await newHistoriaClinica.save();
 
         // Asociar historia clínica al paciente
-        const pacienteId = request.body.pacienteId; // Asegúrate de recibir el ID del paciente
+        const pacienteId = request.body.pacienteId;
         if (!pacienteId) {
             throw new Error('El ID del paciente es obligatorio para asociar la historia clínica');
         }
@@ -53,7 +53,7 @@ async function create(request) {
             pacienteId,
             { historiaClinica: newHistoriaClinica._id },
             { new: true }
-        ).populate('historiaClinica'); // Para traer la historia clínica asociada
+        ).populate('historiaClinica'); 
 
         if (!pacienteActualizado) {
             throw new Error('No se encontró un paciente con el ID proporcionado');
