@@ -60,7 +60,7 @@ const deleteById = async (req, res) => {
         const pacienteId = req.params.Id;
         // Verificar si el paciente tiene alguna cita con estado distinto a 'completada'
         const citasPendientes = await CitaSchema.find({ pacienteId, estado: { $ne: 'completada' } });        if (citasPendientes.length > 0) {
-            return res.status(400).json({ status: 'error', message: 'No se puede eliminar el paciente, tiene citas pendientes o canceladas.' });
+            return res.status(400).json({ status: 'error', message: 'No se puede eliminar el paciente, tiene citas pendientes o en proceso.' });
         }
         const deletedPaciente = await PacienteLogic.deleteById(req);
         res.status(200).json({ status: 'success', message: 'Paciente eliminado', paciente: deletedPaciente });
