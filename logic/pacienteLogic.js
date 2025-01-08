@@ -45,15 +45,15 @@ async function updateByID(id, updateData) {
 }
 
 async function deleteById(request) {
-    try {
-        const pacienteBorrado = await PacienteSchema.findOneAndDelete({ id: request.params.id });
-        if (!pacienteBorrado) {
-            throw new Error('Paciente no encontrado');
-        }
-        return pacienteBorrado; 
-    } catch (error) {
-        throw new Error(`Error al eliminar paciente: ${error.message}`);
-    }
+  try {
+      const pacienteBorrado = await PacienteSchema.findByIdAndDelete(request.params.Id);
+      if (!pacienteBorrado) {
+          throw new Error('Paciente no encontrado');
+      }
+      return pacienteBorrado; 
+  } catch (error) {
+      throw new Error(`Error al eliminar paciente: ${error.message}`);
+  }
 }
 
 async function getAll() {
