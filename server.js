@@ -7,12 +7,7 @@ const appRoutes = require("./routes");
 const port = process.env.PORT || 5000;
 
 // Configuración de CORS específica para tu aplicación
-app.use(cors({
-    origin: 'https://front-odonto-two.vercel.app',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'x-requested-with','Access-Control-Allow-Origin'],
-    credentials: true
-}));
+app.use(cors());
 
 // Middleware para JSON y URL encoded
 app.use(express.json());
