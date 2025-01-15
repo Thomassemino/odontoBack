@@ -1,15 +1,13 @@
 const express = require("express");
 const app = express();
-//const cors = require("cors");
+const cors = require("cors");
 const mongooseConnection = require("./helpers/mongoose-connection");
 const appRoutes = require("./routes");
 
 const port = process.env.PORT || 5000;
 
 
-// Configuración de CORS
-app.use((req, res, next) => { res.setHeader('Access-Control-Allow-Origin', 'https://front-odonto-two.vercel.app'); res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE'); res.setHeader('Access-Control-Allow-Headers', 'Content-Type'); next(); });app.use(cors());
-
+app.use(cors(origin = ['https://front-odonto-two.vercel.app/']));
 
 // Middleware para JSON y URL encoded
 app.use(express.json());
