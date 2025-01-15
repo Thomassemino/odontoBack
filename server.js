@@ -1,13 +1,20 @@
 const express = require("express");
 const app = express();
-//const cors = require("cors");
+const cors = require("cors");
 const mongooseConnection = require("./helpers/mongoose-connection");
 const appRoutes = require("./routes");
 
 const port = process.env.PORT || 5000;
 
 // Configuración de CORS específica para tu aplicación
-//app.use(cors());
+app.use(cors({
+  origin: '*', // Permitir solicitudes desde cualquier origen
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Permitir todos los métodos HTTP
+  allowedHeaders: '*', // Permitir todos los headers
+  exposedHeaders: '*', // Exponer todos los headers
+  credentials: true, // Permitir cookies si es necesario
+  preflightContinue: false, // Permitir que el servidor gestione la respuesta de la pre-solicitud OPTIONS
+}));
 
 // Middleware para JSON y URL encoded
 app.use(express.json());
