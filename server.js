@@ -6,11 +6,7 @@ const appRoutes = require("./routes");
 
 const port = process.env.PORT || 5000;
 // Configuración de CORS
-app.use(cors({
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: '*',
-
-}));
+app.use(cors());
 
 
 // Middleware para JSON y URL encoded
