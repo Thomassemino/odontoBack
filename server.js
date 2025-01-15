@@ -8,12 +8,10 @@ const port = process.env.PORT || 5000;
 
 // Configuración de CORS específica para tu aplicación
 app.use(cors({
-  origin: '*', // Permitir solicitudes desde cualquier origen
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Permitir todos los métodos HTTP
-  allowedHeaders: '*', // Permitir todos los headers
-  exposedHeaders: '*', // Exponer todos los headers
-  credentials: true, // Permitir cookies si es necesario
-  preflightContinue: false, // Permitir que el servidor gestione la respuesta de la pre-solicitud OPTIONS
+  origin: 'https://front-odonto-two.vercel.app/', // Permitir solicitudes desde cualquier origen
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Permite estos métodos
+  allowedHeaders: '*', // Permite todos los encabezados
+  credentials: false, // Si usas cookies o autenticación
 }));
 
 // Middleware para JSON y URL encoded
