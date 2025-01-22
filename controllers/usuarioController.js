@@ -229,5 +229,39 @@ const cambiarPassword = async (req, res) => {
     }
 };
 
-module.exports = { create, login, recuperarPassword, cambiarPassword };
+
+async function actualizarContraseña(req, res) {
+    const { id } = req.params;
+    const { password } = req.body;
+  
+
+    if (!password) {
+      return res.status(400).json({ error: 'La contraseña es requerida' });
+    }
+  
+    try {
+
+      const usuario = await Usuario.findById(id);
+      if (!usuario) {
+        return res.status(404).json({ error: 'Usuario no encontrado' });
+      }
+  
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+  
+      
+      usuario.password = hashedPassword;
+      await usuario.save();
+  
+      
+      res.status(200).json({ mensaje: 'Contraseña actualizada correctamente' });
+    } catch (error) {
+      
+      res.status(500).json({
+        error: 'Error al actualizar la contraseña',
+        detalle: error.message,
+      });
+    }
+  }
+module.exports = { create, login, recuperarPassword, cambiarPassword, actualizarContraseña };
 

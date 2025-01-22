@@ -10,7 +10,7 @@ const pacienteSchema = new mongoose.Schema({
   dni: { 
     type: String, 
     required: [true, 'El DNI es obligatorio'],      
-    unique: true,
+    unique: [true, 'Ya existe un paciente con el DNI ingresado.'],
     validate: {
       validator: function(v) {
         return /^[0-9]{8}$/.test(v);
