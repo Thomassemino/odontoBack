@@ -1,12 +1,13 @@
 const mongoose = require("mongoose");
-const mongoAtlasUri = process.env.MONGO_URL;
-
+require('dotenv').config();
+//const mongoAtlasUri = `mongodb://${process.env.MONGO_INITDB_ROOT_USERNAME}:${process.env.MONGO_INITDB_ROOT_PASSWORD}@${process.env.RAILWAY_TCP_PROXY_DOMAIN}:${process.env.RAILWAY_TCP_PROXY_PORT}`;
+const mongoAtlasUri = "mongodb://mongo:PZtKtNulejUWXDJSgmRbcfgAOpPzKCII@junction.proxy.rlwy.net:52994";
 
 async function conexionMongoose() {
     try {
         // Configurar modo estricto para consultas
         mongoose.set('strictQuery', true);
-
+        console.log(mongoAtlasUri);
         await mongoose.connect(mongoAtlasUri, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
