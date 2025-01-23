@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const mongoAtlasUri = `mongodb://mongo:mZwIcolmcgZOsXQFTcaSxbdJtxoXayLj@monorail.proxy.rlwy.net:56767`;
 
+
 async function conexionMongoose() {
     try {
         // Configurar modo estricto para consultas
