@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const mongoAtlasUri = `mongodb://mongo:fggBpABSFsJGXyOWDnKRUGeNKiAQWPKw@roundhouse.proxy.rlwy.net:21844`;
+const mongoAtlasUri = `mongodb://mongo:mZwIcolmcgZOsXQFTcaSxbdJtxoXayLj@monorail.proxy.rlwy.net:56767`;
 
 async function conexionMongoose() {
     try {
