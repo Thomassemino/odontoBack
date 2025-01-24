@@ -1,8 +1,8 @@
 const Tratamiento = require('../models/tratamientos/tratamientosSchema');
 
 // Lógica para crear tratamiento
-const crearTratamientoLogic = async (nombre, descripcion) => {
-  const tratamiento = new Tratamiento({ nombre, descripcion });
+const crearTratamientoLogic = async (nombre, descripcion, monto) => {
+  const tratamiento = new Tratamiento({ nombre, descripcion, monto });
   return await tratamiento.save();
 };
 
@@ -17,11 +17,11 @@ const obtenerTratamientoPorIdLogic = async (id) => {
 };
 
 // Lógica para actualizar tratamiento
-const actualizarTratamientoLogic = async (id, nombre, descripcion) => {
+const actualizarTratamientoLogic = async (id, nombre, descripcion, monto) => {
   return await Tratamiento.findByIdAndUpdate(
     id,
-    { nombre, descripcion },
-    { new: true } // Devuelve el documento actualizado
+    { nombre, descripcion, monto },
+    { new: true }
   );
 };
 

@@ -4,15 +4,15 @@ const tratamientoLogic = require('../logic/tratamientoLogic');
 // Crear un nuevo tratamiento
 const crearTratamiento = async (req, res) => {
   try {
-    const { nombre, descripcion } = req.body;
+    const { nombre, descripcion, monto } = req.body;
     
     // Validar que los campos están presentes
-    if (!nombre || !descripcion) {
-      return res.status(400).json({ message: 'Nombre y Descripción son requeridos' });
+    if (!nombre || !descripcion || monto === undefined) {
+      return res.status(400).json({ message: 'Nombre, Descripción y Monto son requeridos' });
     }
 
     // Usar la lógica para crear el tratamiento
-    const tratamiento = await tratamientoLogic.crearTratamientoLogic(nombre, descripcion);
+    const tratamiento = await tratamientoLogic.crearTratamientoLogic(nombre, descripcion, monto);
 
     res.status(201).json({ message: 'Tratamiento creado exitosamente', tratamiento });
   } catch (error) {
@@ -53,15 +53,15 @@ const obtenerTratamientoPorId = async (req, res) => {
 const actualizarTratamiento = async (req, res) => {
   try {
     const { id } = req.params;
-    const { nombre, descripcion } = req.body;
+    const { nombre, descripcion, monto } = req.body;
 
     // Validar que los campos estén presentes
-    if (!nombre || !descripcion) {
-      return res.status(400).json({ message: 'Nombre y Descripción son requeridos' });
+    if (!nombre || !descripcion || monto === undefined) {
+      return res.status(400).json({ message: 'Nombre, Descripción y Monto son requeridos' });
     }
 
     // Usar la lógica para actualizar el tratamiento
-    const tratamientoActualizado = await tratamientoLogic.actualizarTratamientoLogic(id, nombre, descripcion);
+    const tratamientoActualizado = await tratamientoLogic.actualizarTratamientoLogic(id, nombre, descripcion, monto);
 
     if (!tratamientoActualizado) {
       return res.status(404).json({ message: 'Tratamiento no encontrado' });

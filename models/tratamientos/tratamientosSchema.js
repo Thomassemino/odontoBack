@@ -13,6 +13,11 @@ const tratamientoSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    monto: {
+      type: Number,
+      required: true,
+      default: 0
+    }
   },
 );
 
