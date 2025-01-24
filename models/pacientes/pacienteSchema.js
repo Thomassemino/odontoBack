@@ -35,7 +35,6 @@ const pacienteSchema = new mongoose.Schema({
   },
   mail: { 
     type: String, 
-    required: [true, 'El email es obligatorio'],
     lowercase: true,
     trim: true,
     validate: {
