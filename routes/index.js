@@ -129,4 +129,13 @@ router.use("/login", loginRoutes);
 
 const tratamientoRoutes = require("./tratamientoRoutes");
 router.use("/tratamientos", tratamientoRoutes);
+
+const odontogramaRoutes = require("./odontogramaRoutes");
+router.use("/odontograma", odontogramaRoutes);
+
+const dienteRoutes = require("./dienteRoutes");
+router.use("/diente", dienteRoutes);
+
+const atencionRoutes = require("./atencionRoutes");
+router.use("/atenciones", atencionRoutes);
 module.exports = router;
