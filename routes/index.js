@@ -139,4 +139,7 @@ router.use("/odontograma", odontogramaRoutes);
 
 const dienteRoutes = require("./dienteRoutes");
 router.use("/diente", dienteRoutes);
+
+const prestacionesRoutes = require("./prestacionesRoutes");
+router.use("/prestaciones", prestacionesRoutes);
 module.exports = router;

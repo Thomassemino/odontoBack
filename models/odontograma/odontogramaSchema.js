@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
-const esquemaOdontograma = new mongoose.Schema({
+const odontogramaSchema = new mongoose.Schema({
   idPaciente: {type: mongoose.Schema.Types.ObjectId, ref: 'Paciente', required: true},
   fecha: {type: Date, default: Date.now},
-  dientes: [{type: mongoose.Schema.Types.ObjectId, ref: 'Diente'}]
+  dientes: [{type: mongoose.Schema.Types.ObjectId, ref: 'Diente'}],
+  observaciones: {type: String},
 });
-module.exports = mongoose.model('Odontograma', esquemaOdontograma);
+module.exports = mongoose.model('Odontograma', odontogramaSchema);
