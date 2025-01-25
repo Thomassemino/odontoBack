@@ -17,7 +17,7 @@ async function createOdontograma(data) {
 }
 
 async function getOdontogramaByPatientId(patientId) {
-  return await Odontograma.find({ idPaciente: patientId })
+  return await Odontograma.find({ idPaciente: new mongoose.Types.ObjectId(patientId) })
     .populate('dientes')
     .sort('-fecha');
 }
