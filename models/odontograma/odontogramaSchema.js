@@ -34,3 +34,20 @@ const dienteSchema = new mongoose.Schema({
   },
   notas: String
 });
+
+const odontogramaSchema = new mongoose.Schema({
+  idPaciente: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Paciente',
+    required: [true, 'El ID del paciente es obligatorio']
+  },
+  fecha: {
+    type: Date,
+    default: Date.now
+  },
+  dientes: [dienteSchema]
+}, {
+  timestamps: true
+});
+
+module.exports = mongoose.model('Odontograma', odontogramaSchema);
