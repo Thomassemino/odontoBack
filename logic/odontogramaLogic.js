@@ -16,6 +16,18 @@ async function create(request) {
     }
   }
 
+  async function deleteAllByPatientId(patientId) {
+    try {
+      const result = await Odontograma.deleteMany({ idPaciente: patientId });
+      if (result.deletedCount === 0) {
+        throw new Error('No se encontraron odontogramas para eliminar');
+      }
+      return result;
+    } catch (error) {
+      throw new Error(`Error al eliminar odontogramas: ${error.message}`);
+    }
+  }
+
 async function getByPatientId(patientId) {
   try {
     return await Odontograma.find({ idPaciente: patientId })
@@ -40,5 +52,6 @@ async function deleteById(id) {
 module.exports = {
   create,
   getByPatientId,
-  deleteById
+  deleteById,
+  deleteAllByPatientId
 };
