@@ -51,6 +51,12 @@ async function eliminarCita(id) {
   return await Cita.findByIdAndDelete(id);
 }
 
+async function obtenerCitasPorPaciente(pacienteId) {
+  return await Cita.find({ pacienteId })
+    .populate('tratamientos')
+    .sort({ fecha: -1 }); // Sort by most recent first
+}
+
 module.exports = {
   crearCita,
   obtenerCitas,
@@ -58,4 +64,5 @@ module.exports = {
   actualizarCita,
   eliminarCita,
   obtenerCitasPorFecha,
+  obtenerCitasPorPaciente
 };
