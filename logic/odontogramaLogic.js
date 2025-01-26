@@ -1,25 +1,48 @@
-const Odontograma = require('../models/odontograma/odontogramaSchema');
-const Diente = require('../models/odontograma/dienteSchema');
+const Odontograma = require("../models/odontograma/odontogramaSchema");
 
-async function createOdontograma(data) {
-  // Primero crear los dientes
-  const dientesCreados = await Promise.all(
-    data.dientes.map(diente => Diente.create(diente))
-  );
+async function create(request) {
+  try {
+    const { idPaciente, dientes } = request.body;
+    
+    const dientesConOrigen = dientes.map(diente => ({
+      ...diente,
+      origen: diente.tratamiento.includes('hecho') ? 'propio' : 'otro'
+    }));
 
-  // Crear el odontograma con las referencias a los dientes
-  const odontogramaData = {
-    idPaciente: data.idPaciente,
-    dientes: dientesCreados.map(d => d._id)
-  };
+    const newOdontograma = new Odontograma({
+      idPaciente,
+      dientes: dientesConOrigen
+    });
 
-  return await Odontograma.create(odontogramaData);
+    return await newOdontograma.save();
+  } catch (error) {
+    throw new Error(error.message);
+  }
 }
 
-async function getOdontogramaByPatientId(patientId) {
-  return await Odontograma.find({ idPaciente: new mongoose.Types.ObjectId(patientId) })
-    .populate('dientes')
-    .sort('-fecha');
+async function getByPatientId(patientId) {
+  try {
+    return await Odontograma.find({ idPaciente: patientId })
+      .sort({ fecha: -1 });
+  } catch (error) {
+    throw new Error(`Error al obtener odontograma: ${error.message}`);
+  }
 }
 
-module.exports = { createOdontograma, getOdontogramaByPatientId };
+async function deleteById(id) {
+  try {
+    const deletedOdontograma = await Odontograma.findByIdAndDelete(id);
+    if (!deletedOdontograma) {
+      throw new Error('Odontograma no encontrado');
+    }
+    return deletedOdontograma;
+  } catch (error) {
+    throw new Error(`Error al eliminar odontograma: ${error.message}`);
+  }
+}
+
+module.exports = {
+  create,
+  getByPatientId,
+  deleteById
+};
