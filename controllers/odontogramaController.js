@@ -1,23 +1,51 @@
-const odontogramaLogic = require('../logic/odontogramaLogic');
+import { PacienteLogic, OdontogramaLogic } from './odontogramalogic.js';
 
-async function createOdontograma(req, res) {    
-  try {
-    const odontograma = await odontogramaLogic.createOdontograma(req.body);
-    res.status(201).json(odontograma);
-  } catch (error) {
-    console.error('Error creating odontograma:', error);
-    res.status(500).json({ error: 'Error al crear el odontograma' });
+export const PacienteController = {
+  async create(req, res) {
+    try {
+      const paciente = await PacienteLogic.create(req.body);
+      res.status(201).json(paciente);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  },
+
+  async findByDni(req, res) {
+    try {
+      const result = await PacienteLogic.findByDni(req.params.dni);
+      res.json(result);
+    } catch (error) {
+      res.status(404).json({ error: error.message });
+    }
+  },
+
+  async update(req, res) {
+    try {
+      const paciente = await PacienteLogic.update(req.params.id, req.body);
+      res.json(paciente);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
   }
-}
+};
 
-async function getOdontogramaByPatientId(req, res) {
-  try {
-    const odontogramas = await odontogramaLogic.getOdontogramaByPatientId(req.params.patientId);
-    res.json(odontogramas);
-  } catch (error) {
-    console.error('Error getting odontograma:', error);
-    res.status(500).json({ error: 'Error al obtener el odontograma' });
+export const OdontogramaController = {
+  async create(req, res) {
+    try {
+      await OdontogramaLogic.validateTreatmentData(req.body);
+      const odontograma = await OdontogramaLogic.create(req.body);
+      res.status(201).json(odontograma);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  },
+
+  async findByPatientId(req, res) {
+    try {
+      const odontogramas = await OdontogramaLogic.findByPatientId(req.params.patientId);
+      res.json(odontogramas);
+    } catch (error) {
+      res.status(404).json({ error: error.message });
+    }
   }
-}
-
-module.exports = { createOdontograma, getOdontogramaByPatientId };
+};

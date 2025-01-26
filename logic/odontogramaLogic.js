@@ -1,25 +1,41 @@
-const Odontograma = require('../models/odontograma/odontogramaSchema');
-const Diente = require('../models/odontograma/dienteSchema');
+import { Paciente, Odontograma } from './odontogramaSchema.js';
 
-async function createOdontograma(data) {
-  // Primero crear los dientes
-  const dientesCreados = await Promise.all(
-    data.dientes.map(diente => Diente.create(diente))
-  );
+export const PacienteLogic = {
+  async create(pacienteData) {
+    const paciente = new Paciente(pacienteData);
+    return await paciente.save();
+  },
 
-  // Crear el odontograma con las referencias a los dientes
-  const odontogramaData = {
-    idPaciente: data.idPaciente,
-    dientes: dientesCreados.map(d => d._id)
-  };
+  async findByDni(dni) {
+    const paciente = await Paciente.findOne({ dni });
+    if (!paciente) throw new Error('Paciente no encontrado');
+    return { paciente };
+  },
 
-  return await Odontograma.create(odontogramaData);
-}
+  async update(id, pacienteData) {
+    return await Paciente.findByIdAndUpdate(id, pacienteData, { new: true });
+  }
+};
 
-async function getOdontogramaByPatientId(patientId) {
-  return await Odontograma.find({ idPaciente: new mongoose.Types.ObjectId(patientId) })
-    .populate('dientes')
-    .sort('-fecha');
-}
+export const OdontogramaLogic = {
+  async create(data) {
+    const odontograma = new Odontograma(data);
+    return await odontograma.save();
+  },
 
-module.exports = { createOdontograma, getOdontogramaByPatientId };
+  async findByPatientId(patientId) {
+    return await Odontograma.find({ idPaciente: patientId }).sort({ fecha: -1 });
+  },
+
+  async validateTreatmentData(data) {
+    if (!data.idPaciente || !data.dientes || !Array.isArray(data.dientes)) {
+      throw new Error('Datos de tratamiento inválidos');
+    }
+    
+    for (const diente of data.dientes) {
+      if (!diente.numeroDiente || !diente.superficie || !diente.tratamiento) {
+        throw new Error('Datos de diente incompletos');
+      }
+    }
+  }
+};
