@@ -1,58 +1,17 @@
-// backup/backup.js
 const fs = require('fs');
 const path = require('path');
 const mongoose = require('mongoose');
 const AdmZip = require('adm-zip');
 const nodemailer = require('nodemailer');
+const cron = require('node-cron');
 
-// 🛠️ Función para enviar el respaldo por email
-async function sendBackupByEmail(backupFile) {
-  try {
-    const transporter = nodemailer.createTransport({
-      service: 'gmail', // O puedes usar otro servicio de correo
-      auth: {
-        user: 'seminothomas8196@gmail.com', 
-        pass: 'wguz arci hkkm jkxa' 
-      }
-    });
-
-    const mailOptions = {
-      from: 'seminothomas8196@gmail.com',
-      to: 'capo1928374650@gmail.com',
-      subject: '📦 Respaldo de la base de datos',
-      text: 'Adjunto encontrarás el respaldo de la base de datos.',
-      attachments: [
-        {
-          filename: path.basename(backupFile),
-          path: backupFile
-        }
-      ]
-    };
-
-    await transporter.sendMail(mailOptions);
-    console.log('📧 Respaldo enviado correctamente por correo.');
-  } catch (error) {
-    console.error('❌ Error al enviar el respaldo por correo:', error);
-  }
-}
-
-// 🛠️ Función para generar el respaldo
 async function backupDatabase() {
   try {
-    const backupDir = path.join(__dirname, 'backups');
-
-    // Eliminar todos los archivos dentro de la carpeta 'backups' antes de crear uno nuevo
-    const files = fs.readdirSync(backupDir);
-    for (const file of files) {
-      const filePath = path.join(backupDir, file);
-      if (fs.lstatSync(filePath).isFile()) {
-        fs.unlinkSync(filePath); // Elimina el archivo
-      }
-    }
-
-    // Si no existe la carpeta 'backups', la crea
+    const backupDir = process.env.BACKUP_DIR || path.join(__dirname, 'backups');
+    
+    // Crear directorio si no existe
     if (!fs.existsSync(backupDir)) {
-      fs.mkdirSync(backupDir);
+      fs.mkdirSync(backupDir, { recursive: true });
     }
 
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
@@ -60,23 +19,76 @@ async function backupDatabase() {
 
     const zip = new AdmZip();
 
+    // Respaldar cada modelo de Mongoose
     for (const modelName of mongoose.modelNames()) {
       const Model = mongoose.model(modelName);
       const data = await Model.find({});
-      const filePath = path.join(__dirname, `${modelName}.json`);
-      fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
-      zip.addLocalFile(filePath);
-      fs.unlinkSync(filePath); // Elimina el archivo temporal JSON
+      const modelFile = path.join(backupDir, `${modelName}.json`);
+      fs.writeFileSync(modelFile, JSON.stringify(data, null, 2));
+      zip.addLocalFile(modelFile);
+      fs.unlinkSync(modelFile); // Eliminar archivo temporal
     }
 
     zip.writeZip(backupFile);
-    console.log(`✅ Respaldo completado: ${backupFile}`);
 
-    // Enviar respaldo por correo
+    // Enviar por correo
     await sendBackupByEmail(backupFile);
+
+    // Limpiar backups antiguos (mantener últimos 7)
+    await cleanOldBackups(backupDir);
+
+    return backupFile;
   } catch (error) {
-    console.error('❌ Error al crear el respaldo:', error);
+    console.error('❌ Error en backup:', error);
+    throw error;
   }
 }
 
-module.exports = backupDatabase;
+async function sendBackupByEmail(backupFile) {
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS
+    }
+  });
+
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: process.env.BACKUP_EMAIL,
+    subject: '📦 Respaldo diario de base de datos',
+    text: 'Respaldo de base de datos adjunto',
+    attachments: [{ filename: path.basename(backupFile), path: backupFile }]
+  };
+
+  await transporter.sendMail(mailOptions);
+}
+
+async function cleanOldBackups(backupDir) {
+  const files = fs.readdirSync(backupDir)
+    .filter(file => file.startsWith('backup-') && file.endsWith('.zip'))
+    .map(file => ({
+      file,
+      mtime: fs.statSync(path.join(backupDir, file)).mtime
+    }))
+    .sort((a, b) => b.mtime - a.mtime);
+
+  // Eliminar backups más antiguos, mantener los 7 más recientes
+  for (let i = 7; i < files.length; i++) {
+    fs.unlinkSync(path.join(backupDir, files[i].file));
+  }
+}
+
+// Programar backup diario a las 9 PM
+function scheduleBackup() {
+  cron.schedule('0 21 * * *', async () => {
+    try {
+      await backupDatabase();
+      console.log('✅ Backup diario completado');
+    } catch (error) {
+      console.error('❌ Backup diario falló:', error);
+    }
+  });
+}
+
+module.exports = { backupDatabase, scheduleBackup };
