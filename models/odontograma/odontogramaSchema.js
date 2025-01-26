@@ -14,7 +14,7 @@ const dienteSchema = new mongoose.Schema({
   superficie: {
     type: String,
     required: [true, 'La superficie es obligatoria'],
-    enum: ['superior', 'inferior', 'izquierda', 'derecha', 'central']
+    enum: ['superior', 'inferior', 'izquierda', 'derecha', 'central', 'completo']
   },
   tratamiento: {
     type: String,
@@ -26,22 +26,11 @@ const dienteSchema = new mongoose.Schema({
       'Extracción hecha', 'Implante para hacer', 'Implante hecho'
     ]
   },
+  origen: {
+    type: String,
+    required: true,
+    enum: ['propio', 'otro'],
+    default: 'propio'
+  },
   notas: String
 });
-
-const odontogramaSchema = new mongoose.Schema({
-  idPaciente: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Paciente',
-    required: [true, 'El ID del paciente es obligatorio']
-  },
-  fecha: {
-    type: Date,
-    default: Date.now
-  },
-  dientes: [dienteSchema]
-}, {
-  timestamps: true
-});
-
-module.exports = mongoose.model('Odontograma', odontogramaSchema);

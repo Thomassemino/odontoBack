@@ -3,10 +3,18 @@ const OdontogramaSchema = require("../models/odontograma/odontogramaSchema");
 async function create(request) {
   try {
     const { idPaciente, dientes } = request.body;
+    
+    // Procesar cada diente para agregar el origen
+    const dientesConOrigen = dientes.map(diente => ({
+      ...diente,
+      origen: diente.tratamiento.includes('hecho') ? 'propio' : 'otro'
+    }));
+
     const newOdontograma = new OdontogramaSchema({
       idPaciente,
-      dientes
+      dientes: dientesConOrigen
     });
+
     await newOdontograma.save();
     return newOdontograma;
   } catch (error) {
