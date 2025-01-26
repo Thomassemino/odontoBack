@@ -64,5 +64,4 @@ module.exports = {
   actualizarCita,
   eliminarCita,
   obtenerCitasPorFecha,
-  obtenerCitasPorPaciente
 };

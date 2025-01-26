@@ -11,6 +11,6 @@ router.get('/:id', citaController.obtenerCitaPorId);     // Obtener cita por ID
 router.put('/:id', citaController.actualizarCita);       // Actualizar cita
 router.delete('/:id', citaController.eliminarCita);      // Eliminar cita
 router.get('/fecha/:fecha', citaController.getCitasPorFecha);  // Obtener citas por fecha específica
-router.get('/paciente/:pacienteId', citaController.obtenerCitasPorPaciente);
+
 
 module.exports = router;

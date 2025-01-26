@@ -176,16 +176,6 @@ const getCitasHoy = async (req, res) => {
   }
 };
 
-async function obtenerCitasPorPaciente(req, res) {
-  try {
-    const citas = await Cita.find({ pacienteId: req.params.pacienteId })
-      .populate('tratamientos');
-    res.json(citas);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-}
-
 module.exports = {
   crearCita,
   obtenerCitas,
@@ -195,5 +185,4 @@ module.exports = {
   obtenerCitasPorMes,
   getCitasHoy,
   getCitasPorFecha,
-  obtenerCitasPorPaciente
 };
