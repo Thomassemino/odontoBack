@@ -19,18 +19,8 @@ const dienteSchema = new mongoose.Schema({
   tratamiento: {
     type: String,
     required: [true, 'El tratamiento es obligatorio'],
-    enum: [
-      'Caries para hacer', 'Arreglo hecho', 'Caries filtrada', 
-      'Por fuera', 'TC para hacer', 'TC hecho',
-      'Corona para hacer', 'Corona hecha', 'Extracción para hacer',
-      'Extracción hecha', 'Implante para hacer', 'Implante hecho'
-    ]
-  },
-  origen: {
-    type: String,
-    required: true,
-    enum: ['propio', 'otro'],
-    default: 'propio'
+    enum: ['Caries', 'Arreglo', 'Caries filtrada', 'Por fuera', 'TC', 
+           'Corona', 'Extracción', 'Implante']
   },
   notas: String
 });
