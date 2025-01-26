@@ -22,6 +22,11 @@ const dienteSchema = new mongoose.Schema({
     enum: ['Caries', 'Arreglo', 'Caries filtrada', 'Por fuera', 'TC', 
            'Corona', 'Extracción', 'Implante']
   },
+  origen: {
+    type: String,
+    required: true,
+    enum: ['propio', 'otro']
+  },
   notas: String
 });
 
