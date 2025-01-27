@@ -35,11 +35,13 @@ const pacienteSchema = new mongoose.Schema({
   },
   mail: { 
     type: String, 
+    required: false, // Hacemos el campo opcional
     lowercase: true,
     trim: true,
     validate: {
       validator: function(v) {
-        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+        // Solo validamos si hay un valor
+        return v === '' || v === null || v === undefined || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
       },
       message: 'Email inválido'
     }
