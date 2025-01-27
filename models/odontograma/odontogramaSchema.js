@@ -2,11 +2,15 @@ const mongoose = require('mongoose');
 
 const dienteSchema = new mongoose.Schema({
   numeroDiente: {
-    type: Number,
+    type: String,
     required: [true, 'El número de diente es obligatorio'],
     validate: {
       validator: function(v) {
-        return v >= 11 && v <= 48;
+        // Validar dientes permanentes (11-48)
+        const permanentPattern = /^([1-4][1-8])$/;
+        // Validar dientes temporales (51-85)
+        const temporaryPattern = /^([5-8][1-5])$/;
+        return permanentPattern.test(v) || temporaryPattern.test(v);
       },
       message: 'Número de diente inválido'
     }
@@ -26,6 +30,10 @@ const dienteSchema = new mongoose.Schema({
     type: String,
     required: true,
     enum: ['propio', 'otro']
+  },
+  isPrimary: {
+    type: Boolean,
+    default: false
   },
   notas: String
 });

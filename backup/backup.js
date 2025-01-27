@@ -37,6 +37,7 @@ async function backupDatabase() {
     // Limpiar backups antiguos (mantener últimos 7)
     await cleanOldBackups(backupDir);
 
+    console.log('✅ Backup completado:', backupFile);
     return backupFile;
   } catch (error) {
     console.error('❌ Error en backup:', error);
@@ -62,6 +63,7 @@ async function sendBackupByEmail(backupFile) {
   };
 
   await transporter.sendMail(mailOptions);
+  console.log('✉️ Backup enviado por correo');
 }
 
 async function cleanOldBackups(backupDir) {
@@ -79,16 +81,22 @@ async function cleanOldBackups(backupDir) {
   }
 }
 
-// Programar backup diario a las 9 PM
+// Programar backup diario a las 9 PM hora de Buenos Aires
 function scheduleBackup() {
+  console.log('🔄 Iniciando programador de backup...');
   cron.schedule('0 21 * * *', async () => {
+    console.log('⏰ Iniciando backup programado:', new Date().toISOString());
     try {
       await backupDatabase();
       console.log('✅ Backup diario completado');
     } catch (error) {
       console.error('❌ Backup diario falló:', error);
     }
+  }, {
+    scheduled: true,
+    timezone: "America/Argentina/Buenos_Aires"
   });
+  console.log('✅ Backup programado para las 21:00 (hora de Buenos Aires)');
 }
 
 module.exports = { backupDatabase, scheduleBackup };
