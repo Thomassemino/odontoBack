@@ -42,8 +42,23 @@ const deleteOdontograma = async (req, res) => {
   }
 };
 
+const deleteAllByPatient = async (req, res) => {
+    try {
+      const deleted = await OdontogramaLogic.deleteAllByPatientId(req.params.patientId);
+      res.status(200).json({
+        status: 'success',
+        message: 'Odontogramas eliminados',
+        result: deleted
+      });
+    } catch (err) {
+      console.error('Error en deleteAllByPatient:', err);
+      res.status(500).json({ status: 'error', message: err.message });
+    }
+  };
+
 module.exports = {
   createOdontograma,
   getByPatientId,
-  deleteOdontograma
+  deleteOdontograma,
+  deleteAllByPatient
 };

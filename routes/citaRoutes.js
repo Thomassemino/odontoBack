@@ -12,4 +12,5 @@ router.put('/:id', citaController.actualizarCita);       // Actualizar cita
 router.delete('/:id', citaController.eliminarCita);      // Eliminar cita
 router.get('/fecha/:fecha', citaController.getCitasPorFecha);  // Obtener citas por fecha específica
 
+
 module.exports = router;

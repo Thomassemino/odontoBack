@@ -1,24 +1,32 @@
 const Odontograma = require("../models/odontograma/odontogramaSchema");
 
 async function create(request) {
-  try {
-    const { idPaciente, dientes } = request.body;
-    
-    const dientesConOrigen = dientes.map(diente => ({
-      ...diente,
-      origen: diente.tratamiento.includes('hecho') ? 'propio' : 'otro'
-    }));
-
-    const newOdontograma = new Odontograma({
-      idPaciente,
-      dientes: dientesConOrigen
-    });
-
-    return await newOdontograma.save();
-  } catch (error) {
-    throw new Error(error.message);
+    try {
+      const { idPaciente, dientes } = request.body;
+      
+      // Remove the origen override mapping
+      const newOdontograma = new Odontograma({
+        idPaciente,
+        dientes
+      });
+  
+      return await newOdontograma.save();
+    } catch (error) {
+      throw new Error(error.message);
+    }
   }
-}
+
+  async function deleteAllByPatientId(patientId) {
+    try {
+      const result = await Odontograma.deleteMany({ idPaciente: patientId });
+      if (result.deletedCount === 0) {
+        throw new Error('No se encontraron odontogramas para eliminar');
+      }
+      return result;
+    } catch (error) {
+      throw new Error(`Error al eliminar odontogramas: ${error.message}`);
+    }
+  }
 
 async function getByPatientId(patientId) {
   try {
@@ -44,5 +52,6 @@ async function deleteById(id) {
 module.exports = {
   create,
   getByPatientId,
-  deleteById
+  deleteById,
+  deleteAllByPatientId
 };
