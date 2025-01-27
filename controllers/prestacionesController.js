@@ -49,9 +49,33 @@ const obtenerPrestacionesPorPaciente = async (req, res) => {
   }
 };
 
+// Agregar pago a prestación
+const agregarPago = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const prestacionActualizada = await prestacionesService.agregarPago(id, req.body);
+    res.status(200).json(prestacionActualizada);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+// Obtener pagos de una prestación
+const obtenerPagosPrestacion = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const pagos = await prestacionesService.obtenerPagosPrestacion(id);
+    res.status(200).json(pagos);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
 module.exports = {
   crearPrestacion,
   editarPrestacion,
   eliminarPrestacion,
   obtenerPrestacionesPorPaciente,
+  agregarPago,
+  obtenerPagosPrestacion
 };

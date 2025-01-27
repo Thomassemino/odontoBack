@@ -14,4 +14,10 @@ router.delete('/:id', prestacionesController.eliminarPrestacion);
 // Ruta para obtener todas las prestaciones de un paciente
 router.get('/paciente/:pacienteId', prestacionesController.obtenerPrestacionesPorPaciente);
 
+// Ruta para agregar un pago a una prestación
+router.post('/:id/pagos', prestacionesController.agregarPago);
+
+// Ruta para obtener los pagos de una prestación
+router.get('/:id/pagos', prestacionesController.obtenerPagosPrestacion);
+
 module.exports = router;
