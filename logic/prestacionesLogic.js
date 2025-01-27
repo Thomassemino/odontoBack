@@ -32,11 +32,6 @@ const agregarPago = async (prestacionId, datosPago) => {
       throw new Error('ID de prestación inválido');
     }
 
-    const prestacion = await Prestaciones.findById(prestacionId);
-    if (!prestacion) {
-      throw new Error('Prestación no encontrada');
-    }
-
     // Validar datos del pago
     if (!datosPago.monto || datosPago.monto <= 0) {
       throw new Error('El monto del pago debe ser mayor a 0');
@@ -46,12 +41,22 @@ const agregarPago = async (prestacionId, datosPago) => {
       datosPago.fecha = new Date();
     }
 
-    prestacion.pagos.push(datosPago);
-    const prestacionActualizada = await prestacion.save();
+    // Usar findOneAndUpdate en lugar de find y save para evitar la validación completa
+    const prestacionActualizada = await Prestaciones.findOneAndUpdate(
+      { _id: prestacionId },
+      { $push: { pagos: datosPago } },
+      { 
+        new: true,
+        runValidators: false, // Evita la validación de campos requeridos
+        populate: 'tratamientoId'
+      }
+    );
 
-    // Poblar los datos necesarios antes de devolver
-    return await Prestaciones.findById(prestacionActualizada._id)
-      .populate('tratamientoId');
+    if (!prestacionActualizada) {
+      throw new Error('Prestación no encontrada');
+    }
+
+    return prestacionActualizada;
   } catch (error) {
     console.error('Error en agregarPago:', error);
     throw error;
