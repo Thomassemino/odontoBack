@@ -27,13 +27,35 @@ const obtenerPrestacionesPorPaciente = async (pacienteId) => {
 };
 
 const agregarPago = async (prestacionId, datosPago) => {
-  const prestacion = await Prestaciones.findById(prestacionId);
-  if (!prestacion) {
-    throw new Error('Prestación no encontrada');
-  }
+  try {
+    if (!mongoose.Types.ObjectId.isValid(prestacionId)) {
+      throw new Error('ID de prestación inválido');
+    }
 
-  prestacion.pagos.push(datosPago);
-  return await prestacion.save();
+    const prestacion = await Prestaciones.findById(prestacionId);
+    if (!prestacion) {
+      throw new Error('Prestación no encontrada');
+    }
+
+    // Validar datos del pago
+    if (!datosPago.monto || datosPago.monto <= 0) {
+      throw new Error('El monto del pago debe ser mayor a 0');
+    }
+
+    if (!datosPago.fecha) {
+      datosPago.fecha = new Date();
+    }
+
+    prestacion.pagos.push(datosPago);
+    const prestacionActualizada = await prestacion.save();
+
+    // Poblar los datos necesarios antes de devolver
+    return await Prestaciones.findById(prestacionActualizada._id)
+      .populate('tratamientoId');
+  } catch (error) {
+    console.error('Error en agregarPago:', error);
+    throw error;
+  }
 };
 
 const obtenerPagosPrestacion = async (prestacionId) => {

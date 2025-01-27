@@ -53,10 +53,22 @@ const obtenerPrestacionesPorPaciente = async (req, res) => {
 const agregarPago = async (req, res) => {
   const { id } = req.params;
   try {
-    const prestacionActualizada = await prestacionesService.agregarPago(id, req.body);
+    console.log('Recibiendo pago para prestación:', id);
+    console.log('Datos del pago:', req.body);
+
+    const prestacionActualizada = await prestacionesService.agregarPago(id, {
+      monto: parseFloat(req.body.monto),
+      fecha: new Date(req.body.fecha)
+    });
+
+    console.log('Prestación actualizada:', prestacionActualizada);
     res.status(200).json(prestacionActualizada);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    console.error('Error en controlador agregarPago:', error);
+    res.status(400).json({ 
+      error: error.message || 'Error al registrar el pago',
+      details: error.stack
+    });
   }
 };
 
