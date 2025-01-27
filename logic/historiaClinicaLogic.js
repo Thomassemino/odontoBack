@@ -5,42 +5,17 @@ const PacienteSchema = require('../models/pacientes/pacienteSchema'); // Importa
 
 async function create(request) {    
     try {
-        // Crear nueva historia clínica respetando la estructura correcta
+        // Crear nueva historia clínica con la nueva estructura
         const newHistoriaClinica = new HistoriaClinicaSchema({
-            datosPersonalesMedicos: {
-                enfermedades: request.body.datosPersonalesMedicos?.enfermedades,
-                tratamientoActual: request.body.datosPersonalesMedicos?.tratamientoActual,
-                medicamentosRegulares: request.body.datosPersonalesMedicos?.medicamentosRegulares,
-                enfermedadInfectoInfecciosa: request.body.datosPersonalesMedicos?.enfermedadInfectoInfecciosa,
-                fuma: request.body.datosPersonalesMedicos?.fuma,
-                embarazo: request.body.datosPersonalesMedicos?.embarazo,
-                enfermedadConstancia: request.body.datosPersonalesMedicos?.enfermedadConstancia,
-                alergias: request.body.datosPersonalesMedicos?.alergias,
-                diabetes: request.body.datosPersonalesMedicos?.diabetes,
-                enfermedadTransmisionSexual: request.body.datosPersonalesMedicos?.enfermedadTransmisionSexual,
-                motivoConsulta: request.body.datosPersonalesMedicos?.motivoConsulta
-            },
-            antecedentesMedicosOdontologicos: {
-                consultoOdontologo: request.body.antecedentesMedicosOdontologicos?.consultoOdontologo,
-                tratamientoOdontologico: {
-                    descripcion: request.body.antecedentesMedicosOdontologicos?.tratamientoOdontologico?.descripcion,
-                    desdeCuando: request.body.antecedentesMedicosOdontologicos?.tratamientoOdontologico?.desdeCuando
-                },
-                dolor: request.body.antecedentesMedicosOdontologicos?.dolor,
-                fracturaDiente: request.body.antecedentesMedicosOdontologicos?.fracturaDiente,
-                dificultadMasticar: request.body.antecedentesMedicosOdontologicos?.dificultadMasticar,
-                dificultadAbrirBoca: request.body.antecedentesMedicosOdontologicos?.dificultadAbrirBoca
-            },
-            estadoActual: {
-                anormalidadBoca: request.body.estadoActual?.anormalidadBoca,
-                sangradoEncias: request.body.estadoActual?.sangradoEncias,
-                hinchazonCara: request.body.estadoActual?.hinchazonCara,
-                higieneBucal: request.body.estadoActual?.higieneBucal
-            },
-            aclaracionesFinalesMedico: request.body.aclaracionesFinalesMedico
+            alergia: request.body.alergia,
+            padeceEnfermedad: request.body.padeceEnfermedad,
+            esPacienteCardiaco: request.body.esPacienteCardiaco,
+            tomaMedicacion: request.body.tomaMedicacion,
+            estadoActualBoca: request.body.estadoActualBoca,
+            anotacionesMedico: request.body.anotacionesMedico
         });
 
-        // Guardar historia clínica
+        // Guardar la nueva historia clínica
         await newHistoriaClinica.save();
 
         // Asociar historia clínica al paciente
@@ -65,6 +40,7 @@ async function create(request) {
         throw new Error(error.message);
     }
 }
+
 
 async function deleteHc(request) {
     try {
@@ -96,7 +72,7 @@ async function getHc(request){
         if (!historiaClinica) {
             throw new Error('Historia Clinica no encontrada');
         }
-
+        
         return historiaClinica;
     } catch (error) {
         throw new Error(`Error al obtener historia clinica: ${error.message}`);
@@ -110,3 +86,4 @@ module.exports = {
     getHc,
   };
   
+
