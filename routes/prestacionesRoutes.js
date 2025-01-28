@@ -20,4 +20,8 @@ router.post('/:id/pagos', prestacionesController.agregarPago);
 // Ruta para obtener los pagos de una prestación
 router.get('/:id/pagos', prestacionesController.obtenerPagosPrestacion);
 
+router.put('/:id/pagos/:pagoId', prestacionesController.editarPago);
+
+router.delete('/:id/pagos/:pagoId', prestacionesController.eliminarPago);
+
 module.exports = router;
