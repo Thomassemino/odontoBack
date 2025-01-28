@@ -50,13 +50,19 @@ const agregarPago = async (prestacionId, datosPago) => {
       throw new Error('El monto del pago debe ser mayor a 0');
     }
 
-    if (!datosPago.fecha) {
-      datosPago.fecha = new Date();
-    }
+    // Asegurarnos de que la fecha del pago se guarde correctamente
+    // Si no se proporciona fecha, usar la fecha actual
+    const fechaPago = datosPago.fecha ? new Date(datosPago.fecha) : new Date();
+    
+    // Crear el objeto de pago con la fecha correcta
+    const nuevoPago = {
+      ...datosPago,
+      fecha: fechaPago
+    };
 
     const prestacionActualizada = await Prestaciones.findOneAndUpdate(
       { _id: prestacionId },
-      { $push: { pagos: datosPago } },
+      { $push: { pagos: nuevoPago } },
       { 
         new: true,
         runValidators: true,
