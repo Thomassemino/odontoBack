@@ -69,13 +69,14 @@ const agregarPago = async (req, res) => {
   }
 };
 
+
 const editarPago = async (req, res) => {
   const { id, pagoId } = req.params;
   try {
     const prestacionActualizada = await prestacionesService.editarPago(id, pagoId, {
-      monto: parseFloat(req.body.monto),
-      fecha: new Date(req.body.fecha),
-      odontologoId: req.body.odontologoId || 'Sistema'
+      ...req.body,
+      editadoPor: req.body.userId,
+      fechaEdicion: new Date()
     });
     res.status(200).json(prestacionActualizada);
   } catch (error) {
@@ -85,9 +86,11 @@ const editarPago = async (req, res) => {
 
 const eliminarPago = async (req, res) => {
   const { id, pagoId } = req.params;
-  const odontologoId = req.body.odontologoId || 'Sistema';
   try {
-    const prestacionActualizada = await prestacionesService.eliminarPago(id, pagoId, odontologoId);
+    const prestacionActualizada = await prestacionesService.eliminarPago(id, pagoId, {
+      eliminadoPor: req.body.userId,
+      fechaEliminacion: new Date()
+    });
     res.status(200).json(prestacionActualizada);
   } catch (error) {
     res.status(400).json({ error: error.message });
