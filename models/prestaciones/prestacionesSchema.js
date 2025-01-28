@@ -10,6 +10,26 @@ const pagoSchema = new mongoose.Schema({
     type: Date,
     required: true,
     default: Date.now
+  },
+  odontologoId: {
+    type: String,
+    required: true
+  },
+  editadoPor: {
+    type: String
+  },
+  fechaEdicion: {
+    type: Date
+  },
+  eliminado: {
+    type: Boolean,
+    default: false
+  },
+  eliminadoPor: {
+    type: String
+  },
+  fechaEliminacion: {
+    type: Date
   }
 });
 
@@ -34,12 +54,34 @@ const prestacionesSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now
+  },
+  creadoPor: {
+    type: String,
+    required: true
+  },
+  modificadoPor: {
+    type: String
+  },
+  fechaModificacion: {
+    type: Date
+  },
+  eliminado: {
+    type: Boolean,
+    default: false
+  },
+  eliminadoPor: {
+    type: String
+  },
+  fechaEliminacion: {
+    type: Date
   }
 });
 
 // Virtual para calcular el total pagado
 prestacionesSchema.virtual('totalPagado').get(function() {
-  return this.pagos.reduce((total, pago) => total + pago.monto, 0);
+  return this.pagos.reduce((total, pago) => 
+    pago.eliminado ? total : total + pago.monto, 0
+  );
 });
 
 // Virtual para calcular el saldo pendiente

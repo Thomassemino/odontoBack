@@ -1,6 +1,5 @@
 const prestacionesService = require('../logic/prestacionesLogic');
 
-// Crear prestación
 const crearPrestacion = async (req, res) => {
   try {
     const nuevaPrestacion = await prestacionesService.crearPrestacion(req.body);
@@ -10,7 +9,6 @@ const crearPrestacion = async (req, res) => {
   }
 };
 
-// Editar prestación
 const editarPrestacion = async (req, res) => {
   const { id } = req.params;
   try {
@@ -24,11 +22,11 @@ const editarPrestacion = async (req, res) => {
   }
 };
 
-// Eliminar prestación
 const eliminarPrestacion = async (req, res) => {
   const { id } = req.params;
+  const odontologoId = req.body.odontologoId || 'Sistema';
   try {
-    const prestacionEliminada = await prestacionesService.eliminarPrestacion(id);
+    const prestacionEliminada = await prestacionesService.eliminarPrestacion(id, odontologoId);
     if (!prestacionEliminada) {
       return res.status(404).json({ error: 'Prestación no encontrada' });
     }
@@ -38,7 +36,6 @@ const eliminarPrestacion = async (req, res) => {
   }
 };
 
-// Obtener prestaciones por paciente
 const obtenerPrestacionesPorPaciente = async (req, res) => {
   const { pacienteId } = req.params;
   try {
@@ -49,7 +46,6 @@ const obtenerPrestacionesPorPaciente = async (req, res) => {
   }
 };
 
-// Agregar pago a prestación
 const agregarPago = async (req, res) => {
   const { id } = req.params;
   try {
@@ -58,7 +54,8 @@ const agregarPago = async (req, res) => {
 
     const prestacionActualizada = await prestacionesService.agregarPago(id, {
       monto: parseFloat(req.body.monto),
-      fecha: new Date(req.body.fecha)
+      fecha: new Date(req.body.fecha),
+      odontologoId: req.body.odontologoId || 'Sistema'
     });
 
     console.log('Prestación actualizada:', prestacionActualizada);
@@ -72,7 +69,31 @@ const agregarPago = async (req, res) => {
   }
 };
 
-// Obtener pagos de una prestación
+const editarPago = async (req, res) => {
+  const { id, pagoId } = req.params;
+  try {
+    const prestacionActualizada = await prestacionesService.editarPago(id, pagoId, {
+      monto: parseFloat(req.body.monto),
+      fecha: new Date(req.body.fecha),
+      odontologoId: req.body.odontologoId || 'Sistema'
+    });
+    res.status(200).json(prestacionActualizada);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+const eliminarPago = async (req, res) => {
+  const { id, pagoId } = req.params;
+  const odontologoId = req.body.odontologoId || 'Sistema';
+  try {
+    const prestacionActualizada = await prestacionesService.eliminarPago(id, pagoId, odontologoId);
+    res.status(200).json(prestacionActualizada);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
 const obtenerPagosPrestacion = async (req, res) => {
   const { id } = req.params;
   try {
@@ -89,5 +110,7 @@ module.exports = {
   eliminarPrestacion,
   obtenerPrestacionesPorPaciente,
   agregarPago,
+  editarPago,
+  eliminarPago,
   obtenerPagosPrestacion
 };

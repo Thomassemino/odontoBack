@@ -11,17 +11,31 @@ const editarPrestacion = async (id, data) => {
   const { pagos, ...datosActualizables } = data;
   return await Prestaciones.findByIdAndUpdate(
     id, 
-    datosActualizables, 
+    { 
+      ...datosActualizables,
+      fechaModificacion: new Date()
+    }, 
     { new: true }
   ).populate('tratamientoId');
 };
 
-const eliminarPrestacion = async (id) => {
-  return await Prestaciones.findByIdAndDelete(id);
+const eliminarPrestacion = async (id, odontologoId) => {
+  return await Prestaciones.findByIdAndUpdate(
+    id,
+    {
+      eliminado: true,
+      eliminadoPor: odontologoId,
+      fechaEliminacion: new Date()
+    },
+    { new: true }
+  );
 };
 
 const obtenerPrestacionesPorPaciente = async (pacienteId) => {
-  return await Prestaciones.find({ pacienteId })
+  return await Prestaciones.find({ 
+    pacienteId,
+    eliminado: { $ne: true }
+  })
     .populate('tratamientoId')
     .sort({ createdAt: -1 });
 };
@@ -32,7 +46,6 @@ const agregarPago = async (prestacionId, datosPago) => {
       throw new Error('ID de prestación inválido');
     }
 
-    // Validar datos del pago
     if (!datosPago.monto || datosPago.monto <= 0) {
       throw new Error('El monto del pago debe ser mayor a 0');
     }
@@ -41,13 +54,12 @@ const agregarPago = async (prestacionId, datosPago) => {
       datosPago.fecha = new Date();
     }
 
-    // Usar findOneAndUpdate en lugar de find y save para evitar la validación completa
     const prestacionActualizada = await Prestaciones.findOneAndUpdate(
       { _id: prestacionId },
       { $push: { pagos: datosPago } },
       { 
         new: true,
-        runValidators: false, // Evita la validación de campos requeridos
+        runValidators: true,
         populate: 'tratamientoId'
       }
     );
@@ -63,12 +75,61 @@ const agregarPago = async (prestacionId, datosPago) => {
   }
 };
 
+const editarPago = async (prestacionId, pagoId, datosPago) => {
+  try {
+    const prestacion = await Prestaciones.findById(prestacionId);
+    if (!prestacion) {
+      throw new Error('Prestación no encontrada');
+    }
+
+    const pago = prestacion.pagos.id(pagoId);
+    if (!pago) {
+      throw new Error('Pago no encontrado');
+    }
+
+    pago.monto = datosPago.monto;
+    pago.fecha = datosPago.fecha;
+    pago.editadoPor = datosPago.odontologoId;
+    pago.fechaEdicion = new Date();
+
+    await prestacion.save();
+    return prestacion;
+  } catch (error) {
+    console.error('Error en editarPago:', error);
+    throw error;
+  }
+};
+
+const eliminarPago = async (prestacionId, pagoId, odontologoId) => {
+  try {
+    const prestacion = await Prestaciones.findById(prestacionId);
+    if (!prestacion) {
+      throw new Error('Prestación no encontrada');
+    }
+
+    const pago = prestacion.pagos.id(pagoId);
+    if (!pago) {
+      throw new Error('Pago no encontrado');
+    }
+
+    pago.eliminado = true;
+    pago.eliminadoPor = odontologoId;
+    pago.fechaEliminacion = new Date();
+
+    await prestacion.save();
+    return prestacion;
+  } catch (error) {
+    console.error('Error en eliminarPago:', error);
+    throw error;
+  }
+};
+
 const obtenerPagosPrestacion = async (prestacionId) => {
   const prestacion = await Prestaciones.findById(prestacionId);
   if (!prestacion) {
     throw new Error('Prestación no encontrada');
   }
-  return prestacion.pagos;
+  return prestacion.pagos.filter(pago => !pago.eliminado);
 };
 
 module.exports = {
@@ -77,5 +138,7 @@ module.exports = {
   eliminarPrestacion,
   obtenerPrestacionesPorPaciente,
   agregarPago,
+  editarPago,
+  eliminarPago,
   obtenerPagosPrestacion
 };
