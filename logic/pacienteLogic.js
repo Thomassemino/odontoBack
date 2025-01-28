@@ -37,6 +37,10 @@ async function findByDni(request) {
     return await PacienteSchema.findOne({ dni: request.params.dni });
 }
 
+async function findById(request) {
+  return await PacienteSchema.findById(request.params.Id);
+}
+
 async function updateByID(id, updateData) {
   return await PacienteSchema.findByIdAndUpdate(id, updateData, {
     new: true, // Devuelve el documento actualizado
@@ -71,5 +75,6 @@ module.exports = {
   updateByID,
   deleteById,
   findByDni,
-  getAll
+  getAll,
+  findById
 };
