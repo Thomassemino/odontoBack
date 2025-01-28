@@ -4,11 +4,11 @@ const tratamientoLogic = require('../logic/tratamientoLogic');
 // Crear un nuevo tratamiento
 const crearTratamiento = async (req, res) => {
   try {
-    const { nombre, descripcion, monto } = req.body;
+    const { nombre, descripcion, monto = 0 } = req.body;
     
-    // Validar que los campos están presentes
-    if (!nombre || !descripcion || monto === undefined) {
-      return res.status(400).json({ message: 'Nombre, Descripción y Monto son requeridos' });
+    // Validar que los campos requeridos estén presentes
+    if (!nombre || !descripcion) {
+      return res.status(400).json({ message: 'Nombre y Descripción son requeridos' });
     }
 
     // Usar la lógica para crear el tratamiento
@@ -53,11 +53,11 @@ const obtenerTratamientoPorId = async (req, res) => {
 const actualizarTratamiento = async (req, res) => {
   try {
     const { id } = req.params;
-    const { nombre, descripcion, monto } = req.body;
+    const { nombre, descripcion, monto = 0 } = req.body;
 
-    // Validar que los campos estén presentes
-    if (!nombre || !descripcion || monto === undefined) {
-      return res.status(400).json({ message: 'Nombre, Descripción y Monto son requeridos' });
+    // Validar que los campos requeridos estén presentes
+    if (!nombre || !descripcion) {
+      return res.status(400).json({ message: 'Nombre y Descripción son requeridos' });
     }
 
     // Usar la lógica para actualizar el tratamiento
