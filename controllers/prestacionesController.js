@@ -47,28 +47,60 @@ const obtenerPrestacionesPorPaciente = async (req, res) => {
 };
 
 const agregarPago = async (req, res) => {
-  const { id } = req.params;
   try {
-    console.log('Recibiendo pago para prestación:', id);
-    console.log('Datos del pago:', req.body);
+    const { id } = req.params; // ID de la prestación
+    const { monto, fecha, odontologoId, historial } = req.body;
 
-    const prestacionActualizada = await prestacionesService.agregarPago(id, {
-      monto: parseFloat(req.body.monto),
-      fecha: new Date(req.body.fecha),
-      odontologoId: req.body.odontologoId || 'Sistema'
+    // Validar datos requeridos
+    if (!monto || !fecha || !odontologoId) {
+      return res.status(400).json({ 
+        error: 'Faltan datos requeridos para el pago' 
+      });
+    }
+
+    // Buscar la prestación
+    const prestacion = await Prestacion.findById(id);
+    if (!prestacion) {
+      return res.status(404).json({ 
+        error: 'Prestación no encontrada' 
+      });
+    }
+
+    // Crear el nuevo pago con toda la información necesaria
+    const nuevoPago = {
+      monto,
+      fecha,
+      odontologoId,
+      fechaCreacion: new Date(),
+      estado: 'activo',
+      // Agregar información de historial
+      historial: [{
+        tipo: 'Nuevo Pago',
+        fecha: new Date(),
+        usuario: odontologoId,
+        detalle: `Pago registrado por ${formatearMoneda(monto)}`
+      }]
+    };
+
+    // Agregar el pago a la prestación
+    prestacion.pagos.push(nuevoPago);
+    
+    // Guardar la prestación actualizada
+    await prestacion.save();
+
+    // Devolver respuesta
+    res.status(201).json({
+      mensaje: 'Pago registrado correctamente',
+      pago: nuevoPago
     });
-
-    console.log('Prestación actualizada:', prestacionActualizada);
-    res.status(200).json(prestacionActualizada);
   } catch (error) {
-    console.error('Error en controlador agregarPago:', error);
-    res.status(400).json({ 
-      error: error.message || 'Error al registrar el pago',
-      details: error.stack
+    console.error('Error al agregar pago:', error);
+    res.status(500).json({ 
+      error: 'Error al procesar el pago',
+      detalle: error.message 
     });
   }
 };
-
 
 const editarPago = async (req, res) => {
   const { id, pagoId } = req.params;
