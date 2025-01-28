@@ -112,15 +112,13 @@ const eliminarPago = async (prestacionId, pagoId, odontologoId) => {
       throw new Error('Pago no encontrado');
     }
 
-    // Marcar el pago como eliminado
+    // Actualizar el pago con los datos de eliminación
     pago.eliminado = true;
-    pago.eliminadoPor = odontologoId;
+    pago.eliminadoPor = odontologoId; // Ahora es directamente el string del ID
     pago.fechaEliminacion = new Date();
 
-    // Guardar los cambios
-    const prestacionActualizada = await prestacion.save();
-    
-    // Retornar la prestación actualizada con el tratamiento poblado
+    // Guardar los cambios y retornar la prestación poblada
+    await prestacion.save();
     return await Prestaciones.findById(prestacionId).populate('tratamientoId');
   } catch (error) {
     console.error('Error en eliminarPago:', error);

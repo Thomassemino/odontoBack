@@ -86,26 +86,17 @@ const editarPago = async (req, res) => {
 
 const eliminarPago = async (req, res) => {
   const { id, pagoId } = req.params;
-  const { userId } = req.body;
-  
+  const odontologoId = req.body.userId || 'Sistema'; // Extraemos directamente el ID
+
   try {
-    const prestacionActualizada = await prestacionesService.eliminarPago(
-      id, 
-      pagoId, 
-      userId || 'Sistema'
-    );
-    
+    const prestacionActualizada = await prestacionesService.eliminarPago(id, pagoId, odontologoId);
     if (!prestacionActualizada) {
       return res.status(404).json({ error: 'Prestación o pago no encontrado' });
     }
-    
     res.status(200).json(prestacionActualizada);
   } catch (error) {
     console.error('Error al eliminar pago:', error);
-    res.status(400).json({ 
-      error: error.message || 'Error al eliminar el pago',
-      details: error.stack 
-    });
+    res.status(400).json({ error: error.message });
   }
 };
 
