@@ -78,29 +78,33 @@ const agregarPago = async (req, res) => {
 const editarPago = async (req, res) => {
   const { id, pagoId } = req.params;
   try {
-    console.log('Recibiendo petición de edición de pago:', {
-      prestacionId: id,
-      pagoId: pagoId,
-      datos: req.body
-    });
-
+    console.log('Datos recibidos para edición:', req.body);
+    
+    // Asegurarse de que tenemos todos los campos requeridos
     const datosPago = {
       monto: parseFloat(req.body.monto),
       fecha: new Date(req.body.fecha),
+      odontologoId: req.body.odontologoId,
+      nombreOdontologo: req.body.nombreOdontologo,
       editadoPor: req.body.editadoPor || req.body.odontologoId,
       nombreEditor: req.body.nombreEditor || req.body.nombreOdontologo,
       fechaEdicion: new Date()
     };
 
-    const prestacionActualizada = await prestacionesService.editarPago(id, pagoId, datosPago);
+    // Validar que tenemos los campos requeridos
+    if (!datosPago.nombreOdontologo || !datosPago.odontologoId) {
+      throw new Error('Faltan datos requeridos del odontólogo');
+    }
+
+    console.log('Datos procesados para edición:', datosPago);
     
-    console.log('Pago editado exitosamente:', prestacionActualizada);
+    const prestacionActualizada = await prestacionesService.editarPago(id, pagoId, datosPago);
     res.status(200).json(prestacionActualizada);
   } catch (error) {
     console.error('Error en controlador editarPago:', error);
     res.status(400).json({ 
-      error: error.message,
-      details: error.stack 
+      error: `Error al editar el pago: ${error.message}`,
+      details: error.stack
     });
   }
 };

@@ -83,8 +83,6 @@ const agregarPago = async (prestacionId, datosPago) => {
 
 const editarPago = async (prestacionId, pagoId, datosPago) => {
   try {
-    console.log('Editando pago con datos:', { prestacionId, pagoId, datosPago });
-
     const prestacion = await Prestaciones.findById(prestacionId);
     if (!prestacion) {
       throw new Error('Prestación no encontrada');
@@ -95,14 +93,25 @@ const editarPago = async (prestacionId, pagoId, datosPago) => {
       throw new Error('Pago no encontrado');
     }
 
-    // Actualizar los campos del pago
-    Object.assign(pago, {
+    // Mantener los valores originales de los campos requeridos si no se proporcionan nuevos
+    const datosActualizados = {
       monto: datosPago.monto,
       fecha: new Date(datosPago.fecha),
       editadoPor: datosPago.editadoPor,
       nombreEditor: datosPago.nombreEditor,
-      fechaEdicion: new Date()
-    });
+      fechaEdicion: new Date(),
+      // Mantener los valores originales de los campos requeridos
+      odontologoId: datosPago.odontologoId || pago.odontologoId,
+      nombreOdontologo: datosPago.nombreOdontologo || pago.nombreOdontologo
+    };
+
+    // Actualizar solo los campos proporcionados
+    Object.assign(pago, datosActualizados);
+
+    // Si la prestación no tiene nombreCreador, agregarlo
+    if (!prestacion.nombreCreador) {
+      prestacion.nombreCreador = pago.nombreOdontologo;
+    }
 
     // Guardar los cambios
     await prestacion.save();
@@ -111,7 +120,7 @@ const editarPago = async (prestacionId, pagoId, datosPago) => {
     return await Prestaciones.findById(prestacionId).populate('tratamientoId');
   } catch (error) {
     console.error('Error en editarPago:', error);
-    throw new Error(`Error al editar el pago: ${error.message}`);
+    throw error;
   }
 };
 
