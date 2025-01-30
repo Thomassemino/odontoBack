@@ -12,7 +12,11 @@ const crearPrestacion = async (req, res) => {
 const editarPrestacion = async (req, res) => {
   const { id } = req.params;
   try {
-    const prestacionActualizada = await prestacionesService.editarPrestacion(id, req.body);
+    const prestacionActualizada = await prestacionesService.editarPrestacion(id, {
+      ...req.body,
+      modificadoPor: req.body.modificadoPor,
+      nombreModificador: req.body.nombreModificador
+    });
     if (!prestacionActualizada) {
       return res.status(404).json({ error: 'Prestación no encontrada' });
     }
@@ -55,7 +59,8 @@ const agregarPago = async (req, res) => {
     const prestacionActualizada = await prestacionesService.agregarPago(id, {
       monto: parseFloat(req.body.monto),
       fecha: new Date(req.body.fecha),
-      odontologoId: req.body.odontologoId || 'Sistema'
+      odontologoId: req.body.odontologoId || 'Sistema',
+      nombreOdontologo: req.body.nombreOdontologo || 'Sistema'
     });
 
     console.log('Prestación actualizada:', prestacionActualizada);
@@ -75,7 +80,8 @@ const editarPago = async (req, res) => {
   try {
     const prestacionActualizada = await prestacionesService.editarPago(id, pagoId, {
       ...req.body,
-      editadoPor: req.body.userId,
+      editadoPor: req.body.editadoPor,
+      nombreEditor: req.body.nombreEditor,
       fechaEdicion: new Date()
     });
     res.status(200).json(prestacionActualizada);
@@ -86,10 +92,16 @@ const editarPago = async (req, res) => {
 
 const eliminarPago = async (req, res) => {
   const { id, pagoId } = req.params;
-  const odontologoId = req.body.userId || 'Sistema'; // Extraemos directamente el ID
+  const { eliminadoPor, nombreEliminador } = req.body;
 
   try {
-    const prestacionActualizada = await prestacionesService.eliminarPago(id, pagoId, odontologoId);
+    const prestacionActualizada = await prestacionesService.eliminarPago(
+      id, 
+      pagoId, 
+      eliminadoPor || 'Sistema',
+      nombreEliminador || 'Sistema'
+    );
+    
     if (!prestacionActualizada) {
       return res.status(404).json({ error: 'Prestación o pago no encontrado' });
     }

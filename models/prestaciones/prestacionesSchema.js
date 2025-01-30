@@ -15,7 +15,14 @@ const pagoSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  nombreOdontologo: {  // Nuevo campo
+    type: String,
+    required: true
+  },
   editadoPor: {
+    type: String
+  },
+  nombreEditor: {      // Nuevo campo
     type: String
   },
   fechaEdicion: {
@@ -26,6 +33,9 @@ const pagoSchema = new mongoose.Schema({
     default: false
   },
   eliminadoPor: {
+    type: String
+  },
+  nombreEliminador: {  // Nuevo campo
     type: String
   },
   fechaEliminacion: {
@@ -59,7 +69,14 @@ const prestacionesSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  nombreCreador: {     // Nuevo campo
+    type: String,
+    required: true
+  },
   modificadoPor: {
+    type: String
+  },
+  nombreModificador: { // Nuevo campo
     type: String
   },
   fechaModificacion: {
@@ -72,10 +89,14 @@ const prestacionesSchema = new mongoose.Schema({
   eliminadoPor: {
     type: String
   },
+  nombreEliminador: {  // Nuevo campo
+    type: String
+  },
   fechaEliminacion: {
     type: Date
   }
 });
+
 
 // Virtual para calcular el total pagado
 prestacionesSchema.virtual('totalPagado').get(function() {

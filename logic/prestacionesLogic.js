@@ -7,13 +7,13 @@ const crearPrestacion = async (data) => {
 };
 
 const editarPrestacion = async (id, data) => {
-  // Asegurarse de que no se puedan editar los pagos directamente
   const { pagos, ...datosActualizables } = data;
   return await Prestaciones.findByIdAndUpdate(
     id, 
     { 
       ...datosActualizables,
-      fechaModificacion: new Date()
+      fechaModificacion: new Date(),
+      nombreModificador: data.nombreModificador // Incluir nombre del modificador
     }, 
     { new: true }
   ).populate('tratamientoId');
@@ -50,14 +50,14 @@ const agregarPago = async (prestacionId, datosPago) => {
       throw new Error('El monto del pago debe ser mayor a 0');
     }
 
-    // Asegurarnos de que la fecha del pago se guarde correctamente
-    // Si no se proporciona fecha, usar la fecha actual
     const fechaPago = datosPago.fecha ? new Date(datosPago.fecha) : new Date();
     
-    // Crear el objeto de pago con la fecha correcta
     const nuevoPago = {
-      ...datosPago,
-      fecha: fechaPago
+      monto: datosPago.monto,
+      fecha: fechaPago,
+      odontologoId: datosPago.odontologoId,
+      nombreOdontologo: datosPago.nombreOdontologo, // Incluir nombre
+      estado: 'activo'
     };
 
     const prestacionActualizada = await Prestaciones.findOneAndUpdate(
@@ -95,7 +95,8 @@ const editarPago = async (prestacionId, pagoId, datosPago) => {
 
     pago.monto = datosPago.monto;
     pago.fecha = datosPago.fecha;
-    pago.editadoPor = datosPago.odontologoId;
+    pago.editadoPor = datosPago.editadoPor;
+    pago.nombreEditor = datosPago.nombreEditor; // Incluir nombre del editor
     pago.fechaEdicion = new Date();
 
     await prestacion.save();
@@ -106,7 +107,8 @@ const editarPago = async (prestacionId, pagoId, datosPago) => {
   }
 };
 
-const eliminarPago = async (prestacionId, pagoId, odontologoId) => {
+
+const eliminarPago = async (prestacionId, pagoId, eliminadoPor, nombreEliminador) => {
   try {
     const prestacion = await Prestaciones.findById(prestacionId);
     if (!prestacion) {
@@ -118,12 +120,11 @@ const eliminarPago = async (prestacionId, pagoId, odontologoId) => {
       throw new Error('Pago no encontrado');
     }
 
-    // Actualizar el pago con los datos de eliminación
     pago.eliminado = true;
-    pago.eliminadoPor = odontologoId; // Ahora es directamente el string del ID
+    pago.eliminadoPor = eliminadoPor;
+    pago.nombreEliminador = nombreEliminador; // Incluir nombre del eliminador
     pago.fechaEliminacion = new Date();
 
-    // Guardar los cambios y retornar la prestación poblada
     await prestacion.save();
     return await Prestaciones.findById(prestacionId).populate('tratamientoId');
   } catch (error) {
