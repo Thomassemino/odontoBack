@@ -83,6 +83,8 @@ const agregarPago = async (prestacionId, datosPago) => {
 
 const editarPago = async (prestacionId, pagoId, datosPago) => {
   try {
+    console.log('Editando pago con datos:', { prestacionId, pagoId, datosPago });
+
     const prestacion = await Prestaciones.findById(prestacionId);
     if (!prestacion) {
       throw new Error('Prestación no encontrada');
@@ -93,17 +95,23 @@ const editarPago = async (prestacionId, pagoId, datosPago) => {
       throw new Error('Pago no encontrado');
     }
 
-    pago.monto = datosPago.monto;
-    pago.fecha = datosPago.fecha;
-    pago.editadoPor = datosPago.editadoPor;
-    pago.nombreEditor = datosPago.nombreEditor; // Incluir nombre del editor
-    pago.fechaEdicion = new Date();
+    // Actualizar los campos del pago
+    Object.assign(pago, {
+      monto: datosPago.monto,
+      fecha: new Date(datosPago.fecha),
+      editadoPor: datosPago.editadoPor,
+      nombreEditor: datosPago.nombreEditor,
+      fechaEdicion: new Date()
+    });
 
+    // Guardar los cambios
     await prestacion.save();
-    return prestacion;
+
+    // Retornar la prestación actualizada con los tratamientos poblados
+    return await Prestaciones.findById(prestacionId).populate('tratamientoId');
   } catch (error) {
     console.error('Error en editarPago:', error);
-    throw error;
+    throw new Error(`Error al editar el pago: ${error.message}`);
   }
 };
 

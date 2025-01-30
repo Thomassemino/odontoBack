@@ -78,15 +78,30 @@ const agregarPago = async (req, res) => {
 const editarPago = async (req, res) => {
   const { id, pagoId } = req.params;
   try {
-    const prestacionActualizada = await prestacionesService.editarPago(id, pagoId, {
-      ...req.body,
-      editadoPor: req.body.editadoPor,
-      nombreEditor: req.body.nombreEditor,
-      fechaEdicion: new Date()
+    console.log('Recibiendo petición de edición de pago:', {
+      prestacionId: id,
+      pagoId: pagoId,
+      datos: req.body
     });
+
+    const datosPago = {
+      monto: parseFloat(req.body.monto),
+      fecha: new Date(req.body.fecha),
+      editadoPor: req.body.editadoPor || req.body.odontologoId,
+      nombreEditor: req.body.nombreEditor || req.body.nombreOdontologo,
+      fechaEdicion: new Date()
+    };
+
+    const prestacionActualizada = await prestacionesService.editarPago(id, pagoId, datosPago);
+    
+    console.log('Pago editado exitosamente:', prestacionActualizada);
     res.status(200).json(prestacionActualizada);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    console.error('Error en controlador editarPago:', error);
+    res.status(400).json({ 
+      error: error.message,
+      details: error.stack 
+    });
   }
 };
 
